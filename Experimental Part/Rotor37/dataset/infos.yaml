@@ -1,0 +1,6 @@
+legal:
+  owner: Safran
+  license: CC-BY-SA
+data_production:
+  type: simulation
+  physics: 3D CFD RANS compressor blade

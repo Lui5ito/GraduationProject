@@ -1,0 +1,21 @@
+task: regression
+input_scalars:
+- Omega
+- P
+output_scalars:
+- Massflow
+- Compression_ratio
+- Efficiency
+input_fields:
+- NormalsX
+- NormalsY
+- NormalsZ
+output_fields:
+- Density
+- Pressure
+- Temperature
+input_timeseries: []
+output_timeseries: []
+input_meshes:
+- /Base_2_3/Zone
+output_meshes: []
