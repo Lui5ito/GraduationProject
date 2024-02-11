@@ -1,0 +1,25 @@
+## For fast Optimal Transport Computation
+flax>=0.8.1
+jax>=0.4.24
+jaxlib>=0.4.24
+optax>=0.1.9
+ott>=0.1.15
+ott-jax>=0.4.5
+
+## For importing the Safran dataset
+h5py>=3.10.0
+
+## For plotting figures
+matplotlib>=3.8.2
+matplotlib-inline>=0.1.6
+seaborn>=0.13.2
+plotly>=5.18.0
+
+## Classicals packages
+numpy>=1.26.4
+pandas>=2.2.0
+scipy>=1.12.0
+
+## Machine Learning
+scikit-learn>=1.4.0
+
