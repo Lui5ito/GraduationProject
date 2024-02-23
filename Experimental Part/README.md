@@ -25,3 +25,6 @@ Key files saved here:
 - [ ] Is the kernel **really** computing the norm in L2(U) ? The RBF and Matern kernels in scitkitlearn uses distance between two observations. The distance used is the Euclidian distance and therefore we indeed compute the Sinkhorn Kernel.
   - [x] Try one kernel for all and look if the results are different -> Resultas are the same.
   - [ ] Try to implement the norm of L2(U) and compute the kernel on that.
+- [ ] Interpretation of Kernel Ridge Regression.
+  - [ ] "dual_coefs" gives the $\{hat\alpha}$ from the theoretical problem.
+  - [ ] How can we quantify the importance of each feature in the regression ?
