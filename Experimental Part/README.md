@@ -22,6 +22,6 @@ Key files saved here:
 - [ ] Optimizing the reference measure as shown in the paper. Eventually using the minimum number of sample with maximum performances.
 
 ## Questions ❓
-- [ ] Is the kernel **really** computing the norm in L2(U) ?
-  - [ ] Try one kernel for all and look if the results are different -> Resultas are the same.
+- [ ] Is the kernel **really** computing the norm in L2(U) ? The RBF and Matern kernels in scitkitlearn uses distance between two observations. The distance used is the Euclidian distance and therefore we indeed compute the Sinkhorn Kernel.
+  - [x] Try one kernel for all and look if the results are different -> Resultas are the same.
   - [ ] Try to implement the norm of L2(U) and compute the kernel on that.
