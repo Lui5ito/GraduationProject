@@ -9,7 +9,7 @@ Key files saved here:
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
 ## What is left to do ?
-- [x] Analysis of the KRR on train_125.
+- [] Analysis of the KRR on train_125.
 - Cross-Validation on the kernels parameters.
 - Trying different kernels (Matérn...).
 - Trying different reference measure.
