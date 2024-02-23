@@ -14,7 +14,7 @@ Key files saved here:
 - [x] Cross-Validation on the kernels parameters.
 - [ ] Sub-sampling the blade using MMD sampling method
   - [ ] Uses too much RAM to perform on T4-Colab GPU's...
-- [ ] Trying different kernels (Matérn...).
+- [x] Trying different kernels (Matérn...).
 - [ ] Trying different reference measure.
 - [ ] Implement the Sliced Wasserstein kernel and compare it to the Sinkhorn kernel. Both in computation time and in performances.
 - [ ] Explore other existing kernels on 3D-distributions, like the previous kernel introduced by Bachoc in a previous paper.
