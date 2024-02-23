@@ -26,5 +26,5 @@ Key files saved here:
   - [x] Try one kernel for all and look if the results are different -> Resultas are the same.
   - [ ] Try to implement the norm of L2(U) and compute the kernel on that.
 - [ ] Interpretation of Kernel Ridge Regression.
-  - [ ] "dual_coefs" gives the $\{hat\alpha}$ from the theoretical problem.
+  - [ ] "dual_coefs" gives the $\hat{\alpha}$ from the theoretical problem.
   - [ ] How can we quantify the importance of each feature in the regression ?
