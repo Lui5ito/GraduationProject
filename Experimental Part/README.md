@@ -14,6 +14,7 @@ Key files saved here:
 - [x] Cross-Validation on the kernels parameters.
 - [ ] Sub-sampling the blade using MMD sampling method
   - [ ] Uses too much RAM to perform on T4-Colab GPU's...
+  - [ ] Works on personal remote computer. Takes about 1 hour the 100 computation of Optimized Sampling + Sinkhorn Algorithm
 - [x] Trying different kernels (Matérn...).
 - [ ] Trying different reference measure.
 - [ ] Implement the Sliced Wasserstein kernel and Mean Maximum Discrepancy and compare it to the Sinkhorn kernel. Both in computation time and in performances.
