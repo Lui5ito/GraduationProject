@@ -15,9 +15,12 @@ Key files saved here:
 - [ ] Sub-sampling the blade using MMD sampling method
   - [ ] Uses too much RAM to perform on T4-Colab GPU's...
   - [ ] Works on personal remote computer. Takes about 1 hour the 100 computation of Optimized Sampling + Sinkhorn Algorithm
-- [ ] Showing the evolution of the performances with regards to the:
+- [ ] Showing the evolution of the performances with regards to the - this can be seen as hyperparameter tuning. Should all these be selected by cross-validation ? They also impact the computation time, we are looking for a compromise between performance and practicality of use.
+  - [ ] train split
   - [ ] sampling size
-  - [x] sampling method - weirdly enough it is not that different between the two...
+  - [ ] epsilon
+  - [x] sampling method - weirdly enough it is not that different between the two... - should we run multiple time for the random sampling ?
+  - [ ] reference measure
 - [x] Trying different kernels (Matérn...).
 - [ ] Trying different reference measure.
 - [ ] Implement the Sliced Wasserstein kernel and Mean Maximum Discrepancy and compare it to the Sinkhorn kernel. Both in computation time and in performances.
