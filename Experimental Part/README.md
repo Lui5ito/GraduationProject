@@ -5,8 +5,9 @@ Key files saved here:
 - Exploring_Rotor37.ipynb: shows how to import the data, understand the dataset and plot a blade. We want to include statistics about the dataset.
 - Optimal_Transport_On_blades.ipynb: performs optimal transport between one blade and multiple reference measure such as another blade, a ball... We also include computation time statistics about performing optimal transport on such huge dataset (one blade is $30,000$ points).
 - exporting_sinkhorn.ipynb: performing OT is expensive. This file is simply performing OT with a random blade as reference measure and saving the train and test sample Sinkhorn potentials in a .csv file, reusable for the Kernel Ridge Regression. Can use multiple sampling methods.
+- exporting_sinkhorn_for_CV.py: Performing the Sinkhorn algorithm for different parameters (train split, epsilon, sampling size and sampling function). The file is .py to enable persistent running on personal computer.
 - Performing_KRR.ipyng: importing the Sinkhorn potentials .csv file and performing the Kernel Ridge Regression.
-- CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search.
+- CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
 ## What is left to do ?
