@@ -11,6 +11,7 @@ Key files saved here:
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
 ## What is left to do ?
+- [ ] Make metadata file for each sinkhorn exportation with sample size, sample méthode, train split, computation time, epsilon, if possible RAM used. How should we store the files ...?
 - [x] Perform KRR on a dataset.
 - [x] Cross-Validation on the kernels parameters.
 - [x] Sub-sampling the blade using MMD sampling method
