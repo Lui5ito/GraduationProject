@@ -434,7 +434,9 @@ def import_blades_precomputed_indices(split: list, sample_size:int, precomputed_
 
 def import_compute_save_precomputed_indices(train_split:list, split_name:str, sample_size:int, precomputed_indices, path:str = None, test_split:list = None, epsilon:float = 0.01, epsilon_txt: str = "001", seed:int = 1):
     """Pre-processes the data and perform Sinkhorn algorithm between the reference measure and the data.
-    Works only for optimized subsampling. 
+    Works only for optimized subsampling.
+
+    !! Saves the files as .npy !!
 
     Args:
         train_split(list): list of blade to consider
@@ -463,15 +465,15 @@ def import_compute_save_precomputed_indices(train_split:list, split_name:str, sa
     train_potentials = preprocess_and_sinkhorn(data = train_data, ref_measure = mu_cloud, epsilon = epsilon)
 
     ## Save the Sinkhorn potentials of the train data
-    file_name = "sinkhorn_potentials_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".csv"
-    np.savetxt(file_name, train_potentials, delimiter=";")
+    file_name = "sinkhorn_potentials_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".npy"
+    np.save(file = file_name, arr = train_potentials)
 
     ## Load, compute and save on test data
     if test_split is not None:
         test_data = import_blades_precomputed_indices(split = test_split, precomputed_indices = precomputed_indices, path = path, sample_size = sample_size)
         test_potentials = preprocess_and_sinkhorn(data = test_data, ref_measure = mu_cloud, epsilon = epsilon)
-        file_name = "sinkhorn_potentials_test_for_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".csv"
-        np.savetxt(file_name, test_potentials, delimiter=";")
+        file_name = "sinkhorn_potentials_test_for_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".npy"
+        np.save(file = file_name, arr = test_potentials)
 
     return "Done!"
 
