@@ -399,6 +399,84 @@ def import_compute_save(train_split:list, split_name:str, sample_func, sample_si
 
     return "Done!"
 
+def import_blades_precomputed_indices(split: list, sample_size:int, precomputed_indices, path:str = None) -> list:
+    """Imports the blade which id are in split... and keep the points from the precomputed file.
+
+    Args:
+        split(list): list of blade to consider
+        path(str): add to the path
+        sample_fn(func): function that subsample a blade
+
+    Returns:
+        list: list of np.arrays. One np.array represents a blade.
+    """
+
+    padded_split = [str(i).zfill(9) for i in split]
+
+    distributions = []
+
+    for id, padded_id in zip(split, padded_split):
+        ## File paths Personal Computer
+        cgns_file_path = f'Rotor37/dataset/samples/sample_{padded_id}/meshes/mesh_000000000.cgns'
+        if path is not None:
+            cgns_file_path = path + cgns_file_path
+        ## Computing the coordinates
+        x, y, z = read_cgns_coordinates(cgns_file_path)
+        blade = np.column_stack((x, y, z))
+        ## Subsampling if necessary
+        indices = precomputed_indices[id]
+        indices = indices[:sample_size]
+        blade = blade[indices]
+        ## Adding to our data
+        distributions.append(blade)
+    
+    return distributions
+
+def import_compute_save_precomputed_indices(train_split:list, split_name:str, sample_size:int, precomputed_indices, path:str = None, test_split:list = None, epsilon:float = 0.01, epsilon_txt: str = "001", seed:int = 1):
+    """Pre-processes the data and perform Sinkhorn algorithm between the reference measure and the data.
+    Works only for optimized subsampling. 
+
+    Args:
+        train_split(list): list of blade to consider
+        split_name(str): name of the train split (for file name)
+        sample_func(func): sample function to consider
+        sample_fun_name(str): name of the sample technique (for file name)
+        test_split(list): list of blade to consider
+        epsilon(float): regularized param in Sinkhorn
+
+    Returns:
+        str: "Done!" when all the computation is done.
+    """
+    np.random.seed(seed)
+
+    ## Import train data
+    train_data = import_blades_precomputed_indices(split = train_split, precomputed_indices = precomputed_indices, path = path, sample_size = sample_size)
+
+    ## Select reference blade among the train data.
+    mu = random.choice(train_data)
+    mu_cloud = WeightedPointCloud(
+        cloud=jnp.array(mu),
+        weights=jnp.ones(len(mu))
+    )
+
+    ## Compute Sinkhorn potentials for the train data
+    train_potentials = preprocess_and_sinkhorn(data = train_data, ref_measure = mu_cloud, epsilon = epsilon)
+
+    ## Save the Sinkhorn potentials of the train data
+    file_name = "sinkhorn_potentials_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".csv"
+    np.savetxt(file_name, train_potentials, delimiter=";")
+
+    ## Load, compute and save on test data
+    if test_split is not None:
+        test_data = import_blades_precomputed_indices(split = test_split, precomputed_indices = precomputed_indices, path = path, sample_size = sample_size)
+        test_potentials = preprocess_and_sinkhorn(data = test_data, ref_measure = mu_cloud, epsilon = epsilon)
+        file_name = "sinkhorn_potentials_test_for_" + split_name + "_" + "OptimizedSample" + f"{sample_size}" + "_epsilon" + epsilon_txt + ".csv"
+        np.savetxt(file_name, test_potentials, delimiter=";")
+
+    return "Done!"
+
+
+
 ## Define train and test splits possible.
 train8 = [154,174,383,501,524,593,711,732]
 train16 = [76,124,130,154,157,174,383,501,524,593,711,732,798,800,959,987]
@@ -416,23 +494,38 @@ test = [1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,10
 # %%
 all_train_sample = [train8, train16, train32, train64, train125, train250, train500, train1000]
 all_train_sample_names = ["train8", "train16", "train32", "train64", "train125", "train250", "train500", "train1000"]
-all_size_sample = [100, 300, 500, 800, 1000, 2000, 5000, 10000, 20000]
+all_size_sample = [10, 50, 100, 300, 500, 800, 1000, 2000, 5000, 10000, 20000]
 all_epsilon_txt = ["001", "01", "1", "10"]
-all_epsilons = [0.01, 0.1, 1, 10]
+all_epsilons = [0.01, 0.1, 1, 10, 100]
 all_sampling_fn = [mmd_subsample_fn, random_subsample_fn, None]
 all_sampling_fn_txt = ["OptimizedSample", "RandomSample", "NotSampled"]
 
-for sample_function, sample_function_name in zip(all_sampling_fn, all_sampling_fn_txt):
-    for sample_size in all_size_sample:
-        for epsilon_txt, epsilon in zip(all_epsilon_txt, all_epsilons):
-            for train, name in zip(all_train_sample, all_train_sample_names):
-                import_compute_save(train_split = train,
-                                    split_name = name,
-                                    sample_func = sample_function,
-                                    sample_fun_name = sample_function_name,
-                                    sample_size = sample_size,
-                                    test_split = None,
-                                    epsilon = epsilon,
-                                    epsilon_txt = epsilon_txt,
-                                    path = None)
+my_precomputed_indices = np.load("indices_train.npy")
 
+
+for sample_function, sample_function_name in zip(all_sampling_fn, all_sampling_fn_txt):
+  for sample_size in all_size_sample:
+      for epsilon_txt, epsilon in zip(all_epsilon_txt, all_epsilons):
+          for train, name in zip(all_train_sample, all_train_sample_names):
+              import_compute_save(train_split = train,
+                                  split_name = name,
+                                  sample_func = sample_function,
+                                  sample_fun_name = sample_function_name,
+                                  sample_size = sample_size,
+                                  test_split = None,
+                                  epsilon = epsilon,
+                                  epsilon_txt = epsilon_txt,
+                                  path = None)
+
+
+for sample_size in all_size_sample:
+    for epsilon_txt, epsilon in zip(all_epsilon_txt, all_epsilons):
+        for train, name in zip(all_train_sample, all_train_sample_names):
+            import_compute_save_precomputed_indices(train_split = train,
+                                                    split_name = name,
+                                                    precomputed_indices = my_precomputed_indices,
+                                                    sample_size = sample_size,
+                                                    test_split = None,
+                                                    epsilon = epsilon,
+                                                    epsilon_txt = epsilon_txt,
+                                                    path = None)
