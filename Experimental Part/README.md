@@ -12,11 +12,18 @@ Key files saved here:
 
 ## What is left to do ?
 - [ ] Make metadata file for each sinkhorn exportation with sample size, sample méthode, train split, computation time, epsilon, if possible RAM used. How should we store the files ...?
+  - Should be organized as a problem first ie train split.
+  - Subsampling parameters:
+    - Then we have sample method - for the random subsampling, it should be done multiple times? - random, optimized, not subsampled.
+    - Sample size - 10, 100, 1000, 2000, 10000.
+  - Optimal Transport parameters:
+    - Epsilon - Big gap in epsilon should be used 001, 1, 100, 10000
+    - Reference measure - every time we randomly select a blade does it mean we should do it multiple times ? It means that we do not use the same reference measure to compare every hyperparameters. 
 - [x] Perform KRR on a dataset.
 - [x] Cross-Validation on the kernels parameters.
 - [x] Sub-sampling the blade using MMD sampling method
-  - [ ] Uses too much RAM to perform on T4-Colab GPU's...
-  - [ ] Works on personal remote computer. Takes about 1 hour the 100 computation of Optimized Sampling + Sinkhorn Algorithm
+  - Uses too much RAM to perform on T4-Colab GPU's...
+  - Works on personal remote computer, but runs on CPU.
 - [x] Showing the evolution of the performances with regards to the - this can be seen as hyperparameter tuning. Should all these be selected by cross-validation ? They also impact the computation time, we are looking for a compromise between performance and practicality of use. Currently we are not measuring performances in time.
   - [x] train split
   - [x] sampling size
