@@ -10,6 +10,45 @@ Key files saved here:
 - CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
+## Structure of the saved files for Sinkhorn potentials
+
+```
+└── Sinkhorn_Saves
+    ├── Split8
+        ├── NotSampled
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon1.npy
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon01.npy
+            ├── ...
+        ├── OptimizedSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_OptimizedSample50_epsilon1.npy
+                ├── ...
+            ├── Size...
+        └── RandomSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_RandomSample50_epsilon1.npy
+                ├── ...
+            ├── Size100
+                ├── sinkhorn_potentials_train8_RandomSample100_epsilon1.npy
+                ├── ...
+            ├── Size...
+    ├── Split16
+        ├── ...
+    ├── Split32
+        ├── ...
+    ├── ...
+
+```
+
+
 
 
 
