@@ -497,13 +497,13 @@ test = [1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,10
 all_train_sample = [train8, train16, train32, train64, train125, train250, train500, train1000]
 all_train_sample_names = ["train8", "train16", "train32", "train64", "train125", "train250", "train500", "train1000"]
 all_size_sample = [10, 50, 100, 300, 500, 800, 1000, 2000, 5000, 10000, 20000]
-all_epsilon_txt = ["001", "01", "1", "10"]
+all_epsilon_txt = ["001", "01", "1", "10", "100"]
 all_epsilons = [0.01, 0.1, 1, 10, 100]
 all_sampling_fn = [mmd_subsample_fn, random_subsample_fn, None]
 all_sampling_fn_txt = ["OptimizedSample", "RandomSample", "NotSampled"]
 
 my_precomputed_indices = np.load("indices_train.npy")
-
+my_precomputed_indices = my_precomputed_indices.astype(int)
 
 for sample_function, sample_function_name in zip(all_sampling_fn, all_sampling_fn_txt):
   for sample_size in all_size_sample:
