@@ -11,6 +11,16 @@ Key files saved here:
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
 
+- Root
+  |- Folder1
+  |  |- Subfolder1
+  |  |  |- File1.txt
+  |  |  |- File2.txt
+  |  |- Subfolder2
+  |     |- File3.txt
+  |- Folder2
+     |- File4.txt
+  |- File5.txt
 
 
 ## What is left to do ?
