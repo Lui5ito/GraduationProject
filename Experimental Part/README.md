@@ -10,9 +10,10 @@ Key files saved here:
 - CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
+## Structure of the saved files for Sinkhorn potentials
 
 ```
-├── example.json
+├── Sinkhorn_Saves
 ├── index.html
 ├── index.js
 ├── package.json
@@ -27,6 +28,20 @@ Key files saved here:
         ├── constants.js
         └── index.js
 ```
+
+<pre>
+📦src
+ ┣ 📂utils
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜another.js
+ ┃ ┣ 📜constants.js
+ ┃ ┗ 📜index.js
+ ┣ 📜README.md
+ ┣ 📜app.js
+ ┣ 📜models.js
+ ┗ 📜routes.js
+</pre>
+
 
 
 
