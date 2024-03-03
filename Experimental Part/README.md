@@ -13,34 +13,40 @@ Key files saved here:
 ## Structure of the saved files for Sinkhorn potentials
 
 ```
-├── Sinkhorn_Saves
-├── index.html
-├── index.js
-├── package.json
-├── package-lock.json
-├── README.md
-└── src
-    ├── app.js
-    ├── models.js
-    ├── routes.js
-    └── utils
-        ├── another.js
-        ├── constants.js
-        └── index.js
-```
+└── Sinkhorn_Saves
+    ├── Split8
+        ├── NotSampled
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon1.npy
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon01.npy
+            ├── ...
+        ├── OptimizedSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_OptimizedSample50_epsilon1.npy
+                ├── ...
+            ├── Size...
+        └── RandomSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_RandomSample50_epsilon1.npy
+                ├── ...
+            ├── Size100
+                ├── sinkhorn_potentials_train8_RandomSample100_epsilon1.npy
+                ├── ...
+            ├── Size...
+    ├── Split16
+        ├── ...
+    ├── Split32
+        ├── ...
+    ├── ...
 
-<pre>
-📦src
- ┣ 📂utils
- ┃ ┣ 📜README.md
- ┃ ┣ 📜another.js
- ┃ ┣ 📜constants.js
- ┃ ┗ 📜index.js
- ┣ 📜README.md
- ┣ 📜app.js
- ┣ 📜models.js
- ┗ 📜routes.js
-</pre>
+```
 
 
 
