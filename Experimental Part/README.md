@@ -69,6 +69,8 @@ mprof plot -s --output=mprof_plot.png
 ```
 for plotting the time evolution of the RAM.
 
+**Probably** we are going to use it without importing the *memory_profiler* in the .py file. Therfore the plot can be nicely printed and in the *mprofile.dat* file we have the evolution of the memory and markers when the call of a function terminated. To optimize the memory management we are going to *del* every object once they are not used in the function *save_sinkhorn_potentials*.
+
 ## Structure of the saved files for Sinkhorn potentials
 
 ```
