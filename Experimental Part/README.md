@@ -10,46 +10,6 @@ Key files saved here:
 - CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
-## Structure of the saved files for Sinkhorn potentials
-
-```
-└── Sinkhorn_Saves
-    ├── Split8
-        ├── NotSampled
-            ├── sinkhorn_potentials_train8_NotSampled_epsilon1.npy
-            ├── sinkhorn_potentials_train8_NotSampled_epsilon01.npy
-            ├── ...
-        ├── OptimizedSample
-            ├── Size10
-                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon1.npy
-                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon01.npy
-                ├── ...
-            ├── Size50
-                ├── sinkhorn_potentials_train8_OptimizedSample50_epsilon1.npy
-                ├── ...
-            ├── Size...
-        └── RandomSample
-            ├── Size10
-                ├── sinkhorn_potentials_train8_RandomSample10_epsilon1.npy
-                ├── sinkhorn_potentials_train8_RandomSample10_epsilon01.npy
-                ├── ...
-            ├── Size50
-                ├── sinkhorn_potentials_train8_RandomSample50_epsilon1.npy
-                ├── ...
-            ├── Size100
-                ├── sinkhorn_potentials_train8_RandomSample100_epsilon1.npy
-                ├── ...
-            ├── Size...
-    ├── Split16
-        ├── ...
-    ├── Split32
-        ├── ...
-    ├── ...
-
-```
-
-
-
 
 
 ## What is left to do ?
@@ -87,3 +47,64 @@ Key files saved here:
 - [ ] Interpretation of Kernel Ridge Regression
   - [ ] "dual_coefs" gives the $\hat{\alpha}$ from the theoretical problem
   - [ ] How can we quantify the importance of each feature in the regression ?
+
+
+## On measuring the quantity of RAM needed
+We are using the package [memory_profiler](https://github.com/pythonprofilers/memory_profiler/tree/master). 
+We cannot have the plot and the memory consumption for each call of the function.
+If you want to have the memory line by line for each call you must have
+```
+from memory_profiler import profile
+```
+at the beginning of the file.
+If you want to plot nicely with spot for every call you must not use the above line.
+
+How is this package used:
+```
+mprof run file.py > mporf_outputs.txt 2>&1
+```
+for computing the sinkhorn potentials and measuring the memory used during each call of the function (enables to isolate each function call).
+```
+mprof plot -s --output=mprof_plot.png
+```
+for plotting the time evolution of the RAM.
+
+**Probably** we are going to use it without importing the *memory_profiler* in the .py file. Therfore the plot can be nicely printed and in the *mprofile.dat* file we have the evolution of the memory and markers when the call of a function terminated. To optimize the memory management we are going to *del* every object once they are not used in the function *save_sinkhorn_potentials*.
+
+## Structure of the saved files for Sinkhorn potentials
+
+```
+└── Sinkhorn_Saves
+    ├── Split8
+        ├── NotSampled
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon1.npy
+            ├── sinkhorn_potentials_train8_NotSampled_epsilon01.npy
+            ├── ...
+        ├── OptimizedSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_OptimizedSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_OptimizedSample50_epsilon1.npy
+                ├── ...
+            ├── Size...
+        └── RandomSample
+            ├── Size10
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon1.npy
+                ├── sinkhorn_potentials_train8_RandomSample10_epsilon01.npy
+                ├── ...
+            ├── Size50
+                ├── sinkhorn_potentials_train8_RandomSample50_epsilon1.npy
+                ├── ...
+            ├── Size100
+                ├── sinkhorn_potentials_train8_RandomSample100_epsilon1.npy
+                ├── ...
+            ├── Size...
+    ├── Split16
+        ├── ...
+    ├── Split32
+        ├── ...
+    ├── ...
+
+```
