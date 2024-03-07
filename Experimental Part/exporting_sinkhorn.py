@@ -348,20 +348,24 @@ def select_subsampling_points(blades: np.ndarray, subsample_size: int, subsample
         pass
     return np.array(list_of_indices)
 
-def subsampling_blades(blades: np.ndarray, subsampling_points: np.ndarray) -> np.ndarray:
+def subsampling_blades(blades: np.ndarray, subsampling_points: np.ndarray, subsampling_size: int) -> np.ndarray:
     """For a list of blades, subsamples each blade according to the points to keep.
 
     Args:
         blades(np.ndarray): Array of blades to consider.
         subsampling_points(np.ndarray): Array of points to consider.
+        subsampling_size(int): Number of points to keep from each subsampled blade.
 
     Returns:
         np.ndarray: Array of np.arrays. Each np.array represents a blade subsampled.
     """
+    if subsampling_size > len(subsampling_points):
+        raise ValueError("subsampling_size cannot exceed the length of subsampling_points")
+
     subsampled_blades = []
-    for blade, points in zip(blades, subsampling_points):
-        subsampled_blades.append(blade[points])
-    return np.array(subsampled_blades)
+    for points in subsampling_points:
+        subsampled_blades.append(points[:subsampling_size])
+    return np.array([blade[subsampled_indices] for blade, subsampled_indices in zip(blades, subsampled_blades)])
 
 def proceed_sinkhorn_algorithm(data: np.ndarray, epsilon, ref_measure) -> np.ndarray:
     """For an array of clouds, perform Sinkhorn algorithm against the reference measure.
