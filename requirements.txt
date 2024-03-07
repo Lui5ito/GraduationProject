@@ -22,6 +22,7 @@ scipy>=1.12.0
 
 ## Machine Learning
 scikit-learn>=1.4.0
+gpy>=1.13.1
 
 ## Memory Tracking
 memory_profiler >= 0.61.0
