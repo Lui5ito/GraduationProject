@@ -1,6 +1,6 @@
 Listes des sujets à évoquer Lundi.
 
-- Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi.
+- Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
 - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
 
 - Il nous faut les efficacité, mass flows et ratio de compression du test sample.
@@ -12,4 +12,6 @@ Listes des sujets à évoquer Lundi.
 - À chaque fois, quelle taille prendre ?
 - Comment optimiser la mesure de référence ?
 
+- Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ? 
 
+- Solutionner le memory leak est ce que c'est le plus important ?
