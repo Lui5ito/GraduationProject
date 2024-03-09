@@ -36,9 +36,13 @@ Key files saved here:
 - [ ] Trying different reference measure.
 - [ ] Implement the Sliced Wasserstein kernel and Mean Maximum Discrepancy and compare it to the Sinkhorn kernel. Both in computation time and in performances. Compare time and memory consumption with Sinkhorn kernel.
 - [ ] Explore other existing kernels on 3D-distributions, like the previous kernel introduced by Bachoc in a previous paper.
-- [ ] Implement Gaussian Process Regression instead of KRR.
+- [x] Implement Gaussian Process Regression instead of KRR. -> Done using the GPy package, manages better the kernels.
 - [ ] Optimizing the reference measure as shown in the paper. Eventually using the minimum number of sample with maximum performances.
 - [ ] Implementing an uncertainty quantification of the *efficiency*.
+- [ ] **Multioutputs models**
+  - [ ] How can we implement that in KRR ?
+  - [ ] In GP two options: 1. MultiOutputs. 2. Coregionalize.
+  - [ ] In Boosting models ?
 
 ## Questions ❓
 - [ ] Is the kernel **really** computing the norm in L2(U) ? The RBF and Matern kernels in scitkitlearn uses distance between two observations. The distance used is the Euclidian distance and therefore we indeed compute the Sinkhorn Kernel
@@ -70,6 +74,9 @@ mprof plot -s --output=mprof_plot.png
 for plotting the time evolution of the RAM.
 
 **Probably** we are going to use it without importing the *memory_profiler* in the .py file. Therfore the plot can be nicely printed and in the *mprofile.dat* file we have the evolution of the memory and markers when the call of a function terminated. To optimize the memory management we are going to *del* every object once they are not used in the function *save_sinkhorn_potentials*.
+
+Shows that we have memory leaks when using Jax. Jax also provides a memory profiler.
+- [ ] Understand where is the leak coming from.
 
 ## Structure of the saved files for Sinkhorn potentials
 
