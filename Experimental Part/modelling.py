@@ -6,26 +6,26 @@ from packages import *
 
 def train(name: str, x_train, y_train, parameters_grid, sinkhorn_length):
     if name == "krr":
-        krr_model = trainKRR(x_train, y_train, parameters_grid, sinkhorn_length)
-        return krr_model
+        krr_model, krr_parameters = trainKRR(x_train, y_train, parameters_grid, sinkhorn_length)
+        return krr_model, krr_parameters
     if name == "gp":
-        gp_model = trainGP(x_train, y_train, sinkhorn_length)
-        return gp_model
+        gp_model, gp_parameters = trainGP(x_train, y_train, sinkhorn_length)
+        return gp_model, gp_parameters
     if name == "catboost":
-        catboost_model = trainCatBoost(x_train, y_train, parameters_grid, sinkhorn_length)
-        return catboost_model
+        catboost_model, catboost_parameters = trainCatBoost(x_train, y_train, parameters_grid)
+        return catboost_model, catboost_parameters
     else:
         raise ValueError(f"The model {name} asked has not been coded yet.")
     
-def inference(name, model, x_test):
+def inference(name, model, x_test, models_parameters, normalizer):
     if name == "krr":
-        krr_predictions = inferenceKRR(model, x_test)
+        krr_predictions = inferenceKRR(model = model, x_test = x_test, models_parameters = models_parameters, normalizer = normalizer)
         return krr_predictions
     if name == "gp":
-        gp_predictions = inferenceGP(model, x_test)
+        gp_predictions = inferenceGP(model = model, x_test = x_test)
         return gp_predictions
     if name == "catboost":
-        catboost_predictions = inferenceCatBoost(model, x_test)
+        catboost_predictions = inferenceCatBoost(model = model, x_test = x_test)
         return catboost_predictions
     else:
         raise ValueError(f"The model {name} asked has not been coded yet.")
@@ -96,6 +96,7 @@ def trainKRR(x_train, y_train, parameters_grid, sinkhorn_length):
 
     best_model, _, best_params = custom_grid_search(ParameterGrid(parameters_grid), x_train, y_train, sampling_size = sinkhorn_length, train_size = 0.8)
 
+    alpha = best_model.alpha
     gamma = best_params['gamma']
     gamma1 = best_params['gamma1']
     gamma2 = best_params['gamma2']
@@ -113,14 +114,34 @@ def trainKRR(x_train, y_train, parameters_grid, sinkhorn_length):
     ## Train the Kernel Ridge Regression the "best_model" objects contains the alpha parameter.
     best_model.fit(X = k_train, y = y_train)
 
-    return best_model
+    krr_parameters = {"regularization": alpha,
+                      "first_kernel": gamma,
+                      "second_kernel": [gamma1, gamma2],
+                      "sinkhorn_train": sinkhorn_train,
+                      "scalars_train": scalars_train, 
+                      "sinkhorn_length": sinkhorn_length}
 
-def inferenceKRR(model, x_test, x_train, normalize):
+    return best_model, krr_parameters
+
+def inferenceKRR(model, x_test, models_parameters:dict, normalizer):
     """For a given krr, predicts.
     """
     if type(model) != sklearn.kernel_ridge.KernelRidge:
         raise TypeError("The model given is not a kernel ridge regression from sklearn.")
-    predictions = model.predict(x_test)
+    
+    kernel_sinkhorn = kernels.RBF(length_scale=np.array([models_parameters["first_kernel"]]))
+    kernel_scalars = kernels.RBF(length_scale=np.array(models_parameters["second_kernel"]))
+
+    sinkhorn_test = x_test[:, 0:models_parameters["sinkhorn_length"]]
+    scalars_test = x_test[:, models_parameters["sinkhorn_length"]:]
+    scalars_test = normalizer.transform(scalars_test)
+
+    kernel_matrix_sinkhorn_test = kernel_sinkhorn(sinkhorn_test, models_parameters["sinkhorn_train"])
+    kernel_matrix_scalars_test = kernel_scalars(scalars_test, models_parameters["scalars_train"])
+    k_test = kernel_matrix_sinkhorn_test * kernel_matrix_scalars_test
+
+    predictions = model.predict(k_test)
+
     return predictions
 
 #################
@@ -140,7 +161,9 @@ def trainGP(x_train, y_train, sinkhorn_length):
     model = GPy.models.GPRegression(x_train, y_train, kernel_product, normalizer=False, noise_var=1.0)
     model.optimize_restarts(num_restarts = 6, messages = False, max_iters = 1000)
 
-    return model
+    model_parameters = {"kernel": model.kern}
+
+    return model, model_parameters
 
 def inferenceGP(model, x_test):
     """For a given trained gaussian process model, we infere the testing data. 
@@ -156,7 +179,7 @@ def inferenceGP(model, x_test):
 ###--CATBOOST--##
 #################
 
-def trainCatBoost(x_train, y_train, parameters_grid, sinkhorn_length):
+def trainCatBoost(x_train, y_train, parameters_grid):
     """Train a CatBoost model. This performs cross validation as well.
     For now can only train a single output model.
     """
@@ -176,7 +199,9 @@ def trainCatBoost(x_train, y_train, parameters_grid, sinkhorn_length):
     # Fit the best model
     best_model.fit(x_train, y_train)
 
-    return best_model
+    model_parameters = best_params
+
+    return best_model, model_parameters
 
 def inferenceCatBoost(model, x_test):
     """Hard coded for a single output.
