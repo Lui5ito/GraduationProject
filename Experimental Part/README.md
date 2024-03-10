@@ -6,7 +6,12 @@
   - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
   - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
 
-- [ ] **Data manquante** y_test pour efficacité, massflow et ratio de compression.
+- [ ] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
+
+- [ ] **Modèle de référence et comparaison**
+  - Modèle de référence ?
+  - Utilisation du noyau Sliced Wasserstein. Quel package ?
+  - Utilisation d'un noyau de Bachoc 2020 ?
 
 - [ ] **Mesures de références**
   - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
@@ -27,6 +32,10 @@
 - [ ] **Organisation du code**
   - Comment doit être organisé le code ? Plusieurs fichiers ou un seul ?
   - Comment importer les packages ? Un seul fichier ?
+
+- [ ] **Attendus du projet**
+  - Rapport papier ? Modification du premier ou un nouveau ?
+  - Présentation du code ? 
 
 
 ## What is left to do ?
