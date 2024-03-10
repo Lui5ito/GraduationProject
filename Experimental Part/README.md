@@ -16,7 +16,7 @@ Key files saved here:
   - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
   - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
 
-- [ ] Il nous faut les efficacité, mass flows et ratio de compression du test sample.
+- [ ] **Data manquante** y_test pour efficacité, massflow et ratio de compression.
 
 - [ ] **Mesures de références**
   - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
@@ -31,9 +31,14 @@ Key files saved here:
 - [ ] **Memory Leak**
   - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
 
+- [ ] **Organisation du code**
+  - Comment doit être organisé le code ? Plusieurs fichiers ou un seul ?
+  - Comment importer les packages ? Un seul fichier ?
+
 
 ## What is left to do ?
 - [ ] Faire un fichier functions.py qu'on importe dans un notebook.
+  - [ ] ???
 - [ ] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
 - [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
 - [ ] Solutionner le memory leak.
