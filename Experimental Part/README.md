@@ -37,6 +37,7 @@
 - [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
 - [ ] Solutionner le memory leak.
 - [ ] Ajouter la possibilté de mettre les noyaux qu'on veut dans les paramètres des fonctions dans modelling.
+- [ ] Changer la façon dont les metadata de Sinkhorn sont sauvegardées. Ne faire que un seul fichier, comme dans la fonction saving.problem.
 - [ ] Analyser les résidus
   - [ ] Statistiques: mean, std
   - [ ] Shapiro-Wilk test: check for normality.
