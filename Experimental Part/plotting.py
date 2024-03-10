@@ -14,3 +14,13 @@ def eval_reg(true, pred):
     plt.ylabel('Predicted Values')
 
     plt.show()
+
+def eval_multireg(true, pred):
+    fig, axes = plt.subplots(1, true.shape[1])
+
+    for i, ax in enumerate(axes):
+        eval_reg(true[:, i], pred[:, i], ax)
+        ax.set_title(f'Output {i+1}')
+
+    plt.tight_layout()
+    plt.show()
