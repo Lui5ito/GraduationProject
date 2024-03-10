@@ -10,9 +10,36 @@ Key files saved here:
 - CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
 - Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
 
+## Listes des sujets à évoquer Lundi.
+
+- [ ] **Multioutputs**
+  - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
+  - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
+
+- [ ] Il nous faut les efficacité, mass flows et ratio de compression du test sample.
+
+- [ ] **Mesures de références**
+  - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
+  - Une sphère centrée sur les données d'un rayon 'r' ? 
+  - Une loi normale 3D ?
+  - À chaque fois, quelle taille prendre ?
+  - Comment optimiser la mesure de référence ?
+
+- [ ] **Analyse des modèles**
+  - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
+
+- [ ] **Memory Leak**
+  - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
 
 
 ## What is left to do ?
+- [ ] Faire un fichier functions.py qu'on importe dans un notebook.
+- [ ] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
+- [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
+- [ ] Solutionner le memory leak.
+- [ ] 
+
+
 - [ ] Make metadata file for each sinkhorn exportation with sample size, sample méthode, train split, computation time, epsilon, if possible RAM used. How should we store the files ...?
   - Should be organized as a problem first ie train split.
   - Subsampling parameters:
