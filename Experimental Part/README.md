@@ -1,22 +1,17 @@
 # Experimental part
 
-This part contains the experimentations of the Sinkhorn kernel on the Rotor37 dataset.
-Key files saved here:
-- Exploring_Rotor37.ipynb: shows how to import the data, understand the dataset and plot a blade. We want to include statistics about the dataset.
-- Optimal_Transport_On_blades.ipynb: performs optimal transport between one blade and multiple reference measure such as another blade, a ball... We also include computation time statistics about performing optimal transport on such huge dataset (one blade is $30,000$ points).
-- exporting_sinkhorn.ipynb: performing OT is expensive. This file is simply performing OT with a random blade as reference measure and saving the train and test sample Sinkhorn potentials in a .csv file, reusable for the Kernel Ridge Regression. Can use multiple sampling methods.
-- exporting_sinkhorn_for_CV.py: Performing the Sinkhorn algorithm for different parameters (train split, epsilon, sampling size and sampling function). The file is .py to enable persistent running on personal computer.
-- Performing_KRR.ipyng: importing the Sinkhorn potentials .csv file and performing the Kernel Ridge Regression.
-- CrossValidation_KRR.ipyng: importing the Sinkhorn potentials .csv file and cross validates the kernels and regression's parameters using a grid search. Also compare the performance of CV-KRR against train split, epsilon, sampling size and sampling function.
-- Experiment_On_Real_Dataset.ipynb: big notebook that shows all the steps to perfrom the KRR on blades.
-
 ## Listes des sujets à évoquer Lundi.
 
 - [ ] **Multioutputs**
   - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
   - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
 
-- [ ] **Data manquante** y_test pour efficacité, massflow et ratio de compression.
+- [ ] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
+
+- [ ] **Modèle de référence et comparaison**
+  - Modèle de référence ?
+  - Utilisation du noyau Sliced Wasserstein. Quel package ?
+  - Utilisation d'un noyau de Bachoc 2020 ?
 
 - [ ] **Mesures de références**
   - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
@@ -24,6 +19,9 @@ Key files saved here:
   - Une loi normale 3D ?
   - À chaque fois, quelle taille prendre ?
   - Comment optimiser la mesure de référence ?
+     
+- [ ] **KRR**
+  - Difficile de l'incorporer dans le reste du code à cause du "precomputed" kernel. 
 
 - [ ] **Analyse des modèles**
   - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
@@ -35,6 +33,10 @@ Key files saved here:
   - Comment doit être organisé le code ? Plusieurs fichiers ou un seul ?
   - Comment importer les packages ? Un seul fichier ?
 
+- [ ] **Attendus du projet**
+  - Rapport papier ? Modification du premier ou un nouveau ?
+  - Présentation du code ? 
+
 
 ## What is left to do ?
 - [ ] Faire un fichier functions.py qu'on importe dans un notebook.
@@ -42,7 +44,30 @@ Key files saved here:
 - [ ] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
 - [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
 - [ ] Solutionner le memory leak.
-- [ ] 
+- [ ] Analyser les résidus
+  - [ ] Statistiques: mean, std
+  - [ ] Shapiro-Wilk test: check for normality.
+  - [ ] Durbin-Watson test: check for autocorrelation.
+
+```
+residual_mean = residuals.mean()
+residual_std = residuals.std()
+print("Mean of residuals:", residual_mean)
+print("Standard deviation of residuals:", residual_std)
+
+from scipy.stats import shapiro
+statistic, p_value = shapiro(residuals)
+print("Shapiro-Wilk test statistic:", statistic)
+print("p-value:", p_value)
+if p_value > 0.05:
+    print("Residuals are normally distributed (fail to reject null hypothesis)")
+else:
+    print("Residuals are not normally distributed (reject null hypothesis)")
+
+from statsmodels.stats.stattools import durbin_watson
+durbin_watson_stat = durbin_watson(residuals)
+print("Durbin-Watson test statistic:", durbin_watson_stat)
+```
 
 
 - [ ] Make metadata file for each sinkhorn exportation with sample size, sample méthode, train split, computation time, epsilon, if possible RAM used. How should we store the files ...?
