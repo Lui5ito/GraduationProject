@@ -1,80 +1,33 @@
 # Experimental part
 
 ## À faire
+- [ ] Faire le code pour plot à partir du dictionnaire
 - [ ] Calculer avec des epsilon de 1e-9
 - [ ] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
+  - [ ] Matern pour les GP est très long à résoudre
 - [ ] [Analyser les résidus](#analyser-les-résidus)
+- [ ] Faire le modèle de référence
+- [ ] Tracer une aube sous échantilloner
+- [ ] Fit un modèle par sortie
+- [ ] Découper le script en plusieurs morceaux, puis faire un script bash.
+- [ ] Réécrire le fichier de export.
 
 ## À faire si on a beaucoup de temps
+- [ ] Utiliser une sphère et un disque comme mesure de référence
+- [ ] Barycentre des distributions comme mesure de référence
+- [ ] Analyse de sensibilité, indices de Sobol
+- [ ] Coregionalized Gaussian Process
+- [ ] Utiliser le sliced Wasserstein kernel
 
-## Listes des sujets à évoquer Lundi.
-
-- [x] **Multioutputs**
-  - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
-  - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
-
-- [x] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
-
-- [x] **Modèle de référence et comparaison**
-  - Modèle de référence ?
-  - Utilisation du noyau Sliced Wasserstein. Quel package ?
-  - Utilisation d'un noyau de Bachoc 2020 ?
-
-- [x] **Mesures de références**
-  - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
-  - Une sphère centrée sur les données d'un rayon 'r' ? 
-  - Une loi normale 3D ?
-  - À chaque fois, quelle taille prendre ?
-  - Comment optimiser la mesure de référence ?
-
-- [x] **Analyse des modèles**
-  - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
-
-- [ ] **Memory Leak**
-  - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
-
-- [x] **Attendus du projet**
-  - Rapport papier ? Modification du premier ou un nouveau ?
-  - Présentation du code ?
-  
-
-
-### My Multi Word Header
-
-## What is left to do ?
+## Listes des choses faites
+- [x] Normalizer les potentiels
+- [x] Vérifier que l'ordre des tests est bien le même
 - [x] Faire un fichier functions.py qu'on importe dans un notebook.
 - [x] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
 - [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
 - [ ] Solutionner le memory leak.
 - [ ] Ajouter la possibilté de mettre les noyaux qu'on veut dans les paramètres des fonctions dans modelling.
 - [ ] Changer la façon dont les metadata de Sinkhorn sont sauvegardées. Ne faire que un seul fichier, comme dans la fonction saving.problem.
-
-###### Analyser les résidus
-  - [ ] Statistiques: mean, std
-  - [ ] Shapiro-Wilk test: check for normality.
-  - [ ] Durbin-Watson test: check for autocorrelation.
-
-```
-residual_mean = residuals.mean()
-residual_std = residuals.std()
-print("Mean of residuals:", residual_mean)
-print("Standard deviation of residuals:", residual_std)
-
-from scipy.stats import shapiro
-statistic, p_value = shapiro(residuals)
-print("Shapiro-Wilk test statistic:", statistic)
-print("p-value:", p_value)
-if p_value > 0.05:
-    print("Residuals are normally distributed (fail to reject null hypothesis)")
-else:
-    print("Residuals are not normally distributed (reject null hypothesis)")
-
-from statsmodels.stats.stattools import durbin_watson
-durbin_watson_stat = durbin_watson(residuals)
-print("Durbin-Watson test statistic:", durbin_watson_stat)
-```
-
-
 - [ ] Make metadata file for each sinkhorn exportation with sample size, sample méthode, train split, computation time, epsilon, if possible RAM used. How should we store the files ...?
   - Should be organized as a problem first ie train split.
   - Subsampling parameters:
@@ -105,6 +58,33 @@ print("Durbin-Watson test statistic:", durbin_watson_stat)
   - [ ] How can we implement that in KRR ?
   - [ ] In GP two options: 1. MultiOutputs. 2. Coregionalize.
   - [ ] In Boosting models ?
+
+
+###### Analyser les résidus
+  - [ ] Statistiques: mean, std
+  - [ ] Shapiro-Wilk test: check for normality.
+  - [ ] Durbin-Watson test: check for autocorrelation.
+
+```
+residual_mean = residuals.mean()
+residual_std = residuals.std()
+print("Mean of residuals:", residual_mean)
+print("Standard deviation of residuals:", residual_std)
+
+from scipy.stats import shapiro
+statistic, p_value = shapiro(residuals)
+print("Shapiro-Wilk test statistic:", statistic)
+print("p-value:", p_value)
+if p_value > 0.05:
+    print("Residuals are normally distributed (fail to reject null hypothesis)")
+else:
+    print("Residuals are not normally distributed (reject null hypothesis)")
+
+from statsmodels.stats.stattools import durbin_watson
+durbin_watson_stat = durbin_watson(residuals)
+print("Durbin-Watson test statistic:", durbin_watson_stat)
+```
+
 
 ## Questions ❓
 - [ ] Is the kernel **really** computing the norm in L2(U) ? The RBF and Matern kernels in scitkitlearn uses distance between two observations. The distance used is the Euclidian distance and therefore we indeed compute the Sinkhorn Kernel
@@ -177,3 +157,37 @@ Shows that we have memory leaks when using Jax. Jax also provides a memory profi
     ├── ...
 
 ```
+
+
+
+
+## Listes des sujets à évoquer Lundi.
+
+- [x] **Multioutputs**
+  - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
+  - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
+
+- [x] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
+
+- [x] **Modèle de référence et comparaison**
+  - Modèle de référence ?
+  - Utilisation du noyau Sliced Wasserstein. Quel package ?
+  - Utilisation d'un noyau de Bachoc 2020 ?
+
+- [x] **Mesures de références**
+  - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
+  - Une sphère centrée sur les données d'un rayon 'r' ? 
+  - Une loi normale 3D ?
+  - À chaque fois, quelle taille prendre ?
+  - Comment optimiser la mesure de référence ?
+
+- [x] **Analyse des modèles**
+  - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
+
+- [ ] **Memory Leak**
+  - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
+
+- [x] **Attendus du projet**
+  - Rapport papier ? Modification du premier ou un nouveau ?
+  - Présentation du code ?
+  
