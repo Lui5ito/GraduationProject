@@ -1,7 +1,10 @@
 from packages import *
 
-def eval_reg(true, pred):
-    plt.figure()
+def eval_reg(true, pred, ax=None):
+    if ax is None:
+        fig, ax = plt.subplots()  # Create a new figure and axis
+    else:
+        plt.sca(ax) 
 
     sns.set_theme(context='paper', font_scale=1.5)
     sns.scatterplot(x=true, y=pred, color='blue', alpha=0.5)
@@ -13,13 +16,14 @@ def eval_reg(true, pred):
     plt.xlabel('Actual Values')
     plt.ylabel('Predicted Values')
 
-    plt.show()
+    if ax is None:
+        plt.show()
 
 def eval_multireg(true, pred):
-    fig, axes = plt.subplots(1, true.shape[1])
+    fig, axes = plt.subplots(1, true.shape[1], figsize=(6*true.shape[1], 5))
 
     for i, ax in enumerate(axes):
-        eval_reg(true[:, i], pred[:, i], ax)
+        eval_reg(true[:, i], pred[:, i], axes[i])
         ax.set_title(f'Output {i+1}')
 
     plt.tight_layout()

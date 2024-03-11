@@ -134,11 +134,11 @@ def test_data(problem, problem_txt, test,
     padded_split = [str(i).zfill(9) for i in problem]
 
     # Import scalars
-    efficiency = []
+    #efficiency = []
     omega = []
     P = []
-    compression_ratio = []
-    massflow = [] 
+    #compression_ratio = []
+    #massflow = [] 
     for id in padded_split:
         coefficient_file_path = f'Rotor37/dataset/samples/sample_{id}/scalars.csv'
         scalars = pd.read_csv(coefficient_file_path)
@@ -148,6 +148,11 @@ def test_data(problem, problem_txt, test,
         P.append(scalars["P"][0])
         #compression_ratio.append(scalars["Compression_ratio"][0])
         #massflow.append(scalars["Massflow"][0])
+    with h5py.File('Rotor37/scalars_test.h5', 'r') as file:
+        output_scalars = np.array(file['output_scalars'])
+        massflow = np.mean(output_scalars[:, :2], axis=1).tolist()
+        compression_ratio = output_scalars[:, 2].tolist()
+        efficiency = output_scalars[:, 3].tolist()
     
     return sinkhorn_potentials, efficiency, omega, P, compression_ratio, massflow, metadata
 

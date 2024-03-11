@@ -159,7 +159,7 @@ def trainGP(x_train, y_train, sinkhorn_length):
     kernel_product = kernel_sinkhorn.prod(kernel_scalars, name='productKernel')
 
     model = GPy.models.GPRegression(x_train, y_train, kernel_product, normalizer=False, noise_var=1.0)
-    model.optimize_restarts(num_restarts = 6, messages = False, max_iters = 1000)
+    model.optimize_restarts(num_restarts = 15, messages = False, max_iters = 5000)
 
     model_parameters = {"kernel": model.kern}
 

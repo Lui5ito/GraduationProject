@@ -1,0 +1,7 @@
+omega
+pressure
+in_massflow
+out_massflow
+compression_rate
+isentropic_efficiency
+polyentropic_efficiency

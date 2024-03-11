@@ -10,11 +10,13 @@ def problem(path_to_file,
             mse,
             evs,
             mae,
-            pearson,
             r2,
-            ar2,
-            residuals,
+            y_test_pred,
+            y_test_pred_file_name,
             model_parameters):
+        
+        np.save(os.path.join(path_to_file, y_test_pred_file_name), y_test_pred)
+
         
         if not os.path.exists(path_to_file):
                 os.makedirs(path_to_file)
@@ -33,12 +35,10 @@ def problem(path_to_file,
                                                 "mse": mse,
                                                 "evs": evs,
                                                 "mae": mae,
-                                                "pearson": pearson,
                                                 "r2": r2,
-                                                "ar2": ar2,
-                                                "residuals": residuals,
                                                 "training_time": training_time,
-                                                "inference_time": inference_time}
+                                                "inference_time": inference_time,
+                                                "y_test_pred": os.path.join(path_to_file, y_test_pred_file_name)}
                 joblib.dump(my_dict, path_to_file+file_name)
         else:
                 my_dict = joblib.load(path_to_file + file_name)
@@ -47,12 +47,10 @@ def problem(path_to_file,
                                 "mse": mse,
                                 "evs": evs,
                                 "mae": mae,
-                                "pearson": pearson,
                                 "r2": r2,
-                                "ar2": ar2,
-                                "residuals": residuals,
                                 "training_time": training_time,
-                                "inference_time": inference_time}
+                                "inference_time": inference_time,
+                                "y_test_pred": os.path.join(path_to_file, y_test_pred_file_name)}
                 joblib.dump(my_dict, path_to_file+file_name)
 
-        return None
+        return "Done!"
