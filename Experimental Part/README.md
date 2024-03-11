@@ -19,9 +19,6 @@
   - Une loi normale 3D ?
   - À chaque fois, quelle taille prendre ?
   - Comment optimiser la mesure de référence ?
-     
-- [ ] **KRR**
-  - Difficile de l'incorporer dans le reste du code à cause du "precomputed" kernel. 
 
 - [ ] **Analyse des modèles**
   - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
@@ -29,21 +26,18 @@
 - [ ] **Memory Leak**
   - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
 
-- [ ] **Organisation du code**
-  - Comment doit être organisé le code ? Plusieurs fichiers ou un seul ?
-  - Comment importer les packages ? Un seul fichier ?
-
 - [ ] **Attendus du projet**
   - Rapport papier ? Modification du premier ou un nouveau ?
   - Présentation du code ? 
 
 
 ## What is left to do ?
-- [ ] Faire un fichier functions.py qu'on importe dans un notebook.
-  - [ ] ???
-- [ ] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
+- [x] Faire un fichier functions.py qu'on importe dans un notebook.
+- [x] Faire une fonction qui en créé un nouveau fichier metadata qui stock les performances d'un modèle: temps de Sinkhorn et paramètres, EVS, MSE, temps d'entraînement, temps d'inférence, hyperparametres retenus après cross validation. 
 - [ ] Étudier la complexité en stockage de l'algorithme de Sinkhorn. 
 - [ ] Solutionner le memory leak.
+- [ ] Ajouter la possibilté de mettre les noyaux qu'on veut dans les paramètres des fonctions dans modelling.
+- [ ] Changer la façon dont les metadata de Sinkhorn sont sauvegardées. Ne faire que un seul fichier, comme dans la fonction saving.problem.
 - [ ] Analyser les résidus
   - [ ] Statistiques: mean, std
   - [ ] Shapiro-Wilk test: check for normality.
