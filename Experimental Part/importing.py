@@ -153,6 +153,12 @@ def test_data(problem, problem_txt, test,
         massflow = np.mean(output_scalars[:, :2], axis=1).tolist()
         compression_ratio = output_scalars[:, 2].tolist()
         efficiency = output_scalars[:, 3].tolist()
+        
+        input_scalars = np.array(file['input_scalars'])
+        omega2 = input_scalars[:, 0].tolist()
+        P2 = input_scalars[:, 1].tolist()
+        if not (omega2 == omega) or (P2 == P):
+            raise ImportError("The test values are not in the same order as the Sinkhorn potentials.")
     
     return sinkhorn_potentials, efficiency, omega, P, compression_ratio, massflow, metadata
 
