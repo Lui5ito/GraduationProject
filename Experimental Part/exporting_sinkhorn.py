@@ -251,6 +251,7 @@ def clouds_to_dual_sinkhorn(points,
   else:
     list_of_g_potentials = []
     clouds, weights = points.unpack()
+    sinkhorn_single_cloud = jax.jit(sinkhorn_single_cloud)
     for i in range(len(clouds)):
       ot_problem = sinkhorn_single_cloud(clouds[i], weights[i], init_dual)
       list_of_g_potentials.append(ot_problem.g)
