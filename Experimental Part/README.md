@@ -1,35 +1,45 @@
 # Experimental part
 
+## À faire
+- [ ] Calculer avec des epsilon de 1e-9
+- [ ] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
+- [ ] [Analyser les résidus](#analyser-les-résidus)
+
+## À faire si on a beaucoup de temps
+
 ## Listes des sujets à évoquer Lundi.
 
-- [ ] **Multioutputs**
+- [x] **Multioutputs**
   - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
   - Est ce que on peut faire des modèles qui font une seule régression ? Coregionalized kernel ?
 
-- [ ] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
+- [x] **Data manquante:** y_test pour efficacité, massflow et ratio de compression.
 
-- [ ] **Modèle de référence et comparaison**
+- [x] **Modèle de référence et comparaison**
   - Modèle de référence ?
   - Utilisation du noyau Sliced Wasserstein. Quel package ?
   - Utilisation d'un noyau de Bachoc 2020 ?
 
-- [ ] **Mesures de références**
+- [x] **Mesures de références**
   - Une aube au hasard, il faut bien faire la moyenne des résultats en prenant des aubes différentes ?
   - Une sphère centrée sur les données d'un rayon 'r' ? 
   - Une loi normale 3D ?
   - À chaque fois, quelle taille prendre ?
   - Comment optimiser la mesure de référence ?
 
-- [ ] **Analyse des modèles**
+- [x] **Analyse des modèles**
   - Est ce que il y a un moyen, KRR ou GP, pour analyser la régression. Quelles variables sont les plus influentes ?
 
 - [ ] **Memory Leak**
   - Solutionner le memory leak est ce que c'est le plus important ? Si on veut faire tourner le full Sinkhorn sûrement.
 
-- [ ] **Attendus du projet**
+- [x] **Attendus du projet**
   - Rapport papier ? Modification du premier ou un nouveau ?
-  - Présentation du code ? 
+  - Présentation du code ?
+  
 
+
+### My Multi Word Header
 
 ## What is left to do ?
 - [x] Faire un fichier functions.py qu'on importe dans un notebook.
@@ -38,7 +48,8 @@
 - [ ] Solutionner le memory leak.
 - [ ] Ajouter la possibilté de mettre les noyaux qu'on veut dans les paramètres des fonctions dans modelling.
 - [ ] Changer la façon dont les metadata de Sinkhorn sont sauvegardées. Ne faire que un seul fichier, comme dans la fonction saving.problem.
-- [ ] Analyser les résidus
+
+###### Analyser les résidus
   - [ ] Statistiques: mean, std
   - [ ] Shapiro-Wilk test: check for normality.
   - [ ] Durbin-Watson test: check for autocorrelation.
