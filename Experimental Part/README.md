@@ -3,13 +3,10 @@
 ## À faire
 - [ ] Faire le code pour plot à partir du dictionnaire
 - [ ] Calculer avec des epsilon de 1e-9
-- [ ] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
-  - [ ] Matern pour les GP est très long à résoudre
 - [ ] [Analyser les résidus](#analyser-les-résidus)
 - [ ] Faire le modèle de référence
 - [ ] Tracer une aube sous échantilloner
 - [ ] Fit un modèle par sortie
-- [ ] Découper le script en plusieurs morceaux, puis faire un script bash.
 - [ ] Réécrire le fichier de export.
 
 ## À faire si on a beaucoup de temps
@@ -20,6 +17,9 @@
 - [ ] Utiliser le sliced Wasserstein kernel
 
 ## Listes des choses faites
+- [x] Découper le script en plusieurs morceaux, puis faire un script bash.
+- [x] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
+  - [x] Matern pour les GP est très long à résoudre
 - [x] Normalizer les potentiels
 - [x] Vérifier que l'ordre des tests est bien le même
 - [x] Faire un fichier functions.py qu'on importe dans un notebook.
