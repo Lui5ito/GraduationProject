@@ -1,13 +1,19 @@
 # Experimental part
 
 ## À faire
-- [ ] Faire le code pour plot à partir du dictionnaire
-- [ ] Calculer avec des epsilon de 1e-9
+- [ ] Faire le code pour plot à partir du dictionnaire.
+- [ ] Calculer avec des epsilon de 1e-9.
 - [ ] [Analyser les résidus](#analyser-les-résidus)
-- [ ] Faire le modèle de référence
+- [x] Faire le modèle de référence
+  - [ ] Les performances du modèles change en fonction de la manière de sous-échantillonnage et la quantité de points retenus.
+  - [ ] Un autre hyperparamètre est la dimension de la PCA.
+  - [ ] Entraîner des GP anisotropic prend beacoup de temps, une dimension de 20 pour la PCA est raisonnable.
+  - [ ] Un désavantage de ce modèle est de ne pas fonctionner si les aubes n'ont pas toutes exactement le même nombre de points. On devrait donc faire le noayux Sinkhorn sur des aubes avec un nombre de points différents.
 - [ ] Tracer une aube sous échantilloner
-- [ ] Fit un modèle par sortie
+- [ ] Fit un modèle par sortie.
 - [ ] Réécrire le fichier de export.
+  - [ ] Le code pour sous-échantillonner est probablement faux.
+  - [ ] Il y a beacoup de choses à simplifier.
 
 ## À faire si on a beaucoup de temps
 - [ ] Utiliser une sphère et un disque comme mesure de référence
