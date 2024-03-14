@@ -1,6 +1,7 @@
 # Experimental part
 
 ## À faire
+- [ ] Beaucoup trop d'hyperparamètres à optimiser... [voir?](https://github.com/bayesian-optimization/BayesianOptimization?tab=readme-ov-file)
 - [ ] Faire le code pour plot à partir du dictionnaire.
 - [ ] Calculer avec des epsilon de 1e-9.
 - [ ] [Analyser les résidus](#analyser-les-résidus)
