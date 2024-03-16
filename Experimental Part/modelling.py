@@ -50,11 +50,11 @@ def custom_grid_search(param_grid, x_train, y_train, sampling_size, train_size:f
 
     x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, train_size = train_size, random_state = 42)
 
-    sinkhorn_train = x_train[:, 0:sampling_size]
-    scalars_train = x_train[:, sampling_size:]
+    sinkhorn_train = x_train[:, 2:]
+    scalars_train = x_train[:, 0:2]
 
-    sinkhorn_val = x_val[:, 0:sampling_size]
-    scalars_val = x_val[:, sampling_size:]
+    sinkhorn_val = x_val[:, 2:]
+    scalars_val = x_val[:, 0:2]
 
     for params in param_grid:
         gamma = params['gamma']
@@ -64,8 +64,8 @@ def custom_grid_search(param_grid, x_train, y_train, sampling_size, train_size:f
 
         krr = KernelRidge(kernel="precomputed", alpha = alpha)
 
-        kernel_sinkhorn = kernels.RBF(length_scale=np.array(gamma))
-        kernel_scalars = kernels.RBF(length_scale=np.array([gamma1, gamma2]))
+        kernel_sinkhorn = kernels.Matern(length_scale=np.array(gamma), nu = 2.5)
+        kernel_scalars = kernels.Matern(length_scale=np.array([gamma1, gamma2]), nu = 2.5)
         
         kernel_matrix_sinkhorn_train = kernel_sinkhorn(sinkhorn_train)
         kernel_matrix_scalars_train = kernel_scalars(scalars_train)
@@ -101,8 +101,8 @@ def trainKRR(x_train, y_train, parameters_grid, sinkhorn_length):
     gamma1 = best_params['gamma1']
     gamma2 = best_params['gamma2']
 
-    kernel_sinkhorn = kernels.RBF(length_scale=np.array(gamma))
-    kernel_scalars = kernels.RBF(length_scale=np.array([gamma1, gamma2]))
+    kernel_sinkhorn = kernels.Matern(length_scale=np.array(gamma), nu = 2.5)
+    kernel_scalars = kernels.Matern(length_scale=np.array([gamma1, gamma2]), nu = 2.5)
     
     ## Train Kernel Matrix
     sinkhorn_train = x_train[: , 0:sinkhorn_length]
@@ -129,12 +129,12 @@ def inferenceKRR(model, x_test, models_parameters:dict, normalizer):
     if type(model) != sklearn.kernel_ridge.KernelRidge:
         raise TypeError("The model given is not a kernel ridge regression from sklearn.")
     
-    kernel_sinkhorn = kernels.RBF(length_scale=np.array([models_parameters["first_kernel"]]))
-    kernel_scalars = kernels.RBF(length_scale=np.array(models_parameters["second_kernel"]))
+    kernel_sinkhorn = kernels.Matern(length_scale=np.array([models_parameters["first_kernel"]]), nu = 2.5)
+    kernel_scalars = kernels.Matern(length_scale=np.array(models_parameters["second_kernel"]), nu = 2.5)
 
     sinkhorn_test = x_test[:, 0:models_parameters["sinkhorn_length"]]
     scalars_test = x_test[:, models_parameters["sinkhorn_length"]:]
-    scalars_test = normalizer.transform(scalars_test)
+    #scalars_test = normalizer.transform(scalars_test)
 
     kernel_matrix_sinkhorn_test = kernel_sinkhorn(sinkhorn_test, models_parameters["sinkhorn_train"])
     kernel_matrix_scalars_test = kernel_scalars(scalars_test, models_parameters["scalars_train"])
@@ -154,12 +154,12 @@ def trainGP(x_train, y_train, sinkhorn_length):
 
     A good addition would be to put the kernels in the function's argument.
     """
-    kernel_sinkhorn = GPy.kern.RBF(input_dim = sinkhorn_length, active_dims = list(range(0, sinkhorn_length)), ARD = True)
-    kernel_scalars = GPy.kern.RBF(input_dim = 2, active_dims = list(range(sinkhorn_length, x_train.shape[1])), ARD = True)
+    kernel_sinkhorn = GPy.kern.Matern52(input_dim = sinkhorn_length, active_dims = list(range(0, sinkhorn_length)), ARD = False)
+    kernel_scalars = GPy.kern.Matern52(input_dim = 2, active_dims = list(range(sinkhorn_length, x_train.shape[1])), ARD = True)
     kernel_product = kernel_sinkhorn.prod(kernel_scalars, name='productKernel')
 
     model = GPy.models.GPRegression(x_train, y_train, kernel_product, normalizer=False, noise_var=1.0)
-    model.optimize_restarts(num_restarts = 15, messages = False, max_iters = 5000)
+    model.optimize_restarts(num_restarts = 3, messages = False, max_iters = 5000)
 
     model_parameters = {"kernel": model.kern}
 

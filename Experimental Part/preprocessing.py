@@ -21,6 +21,10 @@ def train_data(sinkhorn_potentials, list_of_X, list_of_Y):
     normalize = StandardScaler().fit(scalars_train)
     scalars_train = normalize.transform(scalars_train)
     x_train = np.hstack((sinkhorn_train, scalars_train))
+    
+    #normalize = StandardScaler().fit(x_train)
+    #x_train = normalize.transform(x_train)
+
 
     return x_train, y_train, normalize
 
@@ -43,5 +47,7 @@ def test_data(sinkhorn_potentials, list_of_X, list_of_Y, train_normalizer):
     scalars_test = x_test[: ,sinkhorn_length:]
     scalars_test = train_normalizer.transform(scalars_test)
     x_test = np.hstack((sinkhorn_test, scalars_test))
+
+    #x_test = train_normalizer.transform(x_test)
 
     return x_test, y_test

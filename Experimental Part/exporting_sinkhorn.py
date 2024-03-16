@@ -31,7 +31,54 @@ import json
 # For memory consumption track
 #from memory_profiler import profile
 
+import argparse
 
+# Define command-line arguments
+parser = argparse.ArgumentParser(description='Script description')
+
+parser.add_argument('--train_splits', nargs='+', 
+                    default=['train8'], 
+                    help='List of train splits')
+
+parser.add_argument('--subsampling_methods', nargs='+', 
+                    default=None, 
+                    help='List of subsampling methods')
+
+parser.add_argument('--subsampling_sizes', nargs='+', type = int,
+                    default=[0], 
+                    help='List of subsampling sizes')
+
+parser.add_argument('--epsilons', nargs='+', type = float, 
+                    default=[1e-3, 1e-4, 1e-5, 1e-6], 
+                    help='List of epsilons')
+
+parser.add_argument('--ref_measure_texts', nargs='+', 
+                    help='List of ref measure texts')
+
+parser.add_argument('--ref_measure_sizes', nargs='+', type=int, 
+                    default=[1000], 
+                    help='List of ref measure sizes')
+
+parser.add_argument("--numerateur", type=int, 
+                    default = 1,
+                    help="Numerateur argument")
+parser.add_argument("--denominateur", type=int, 
+                    default = 1,
+                    help="Denominateur argument")
+
+args = parser.parse_args()
+print(args)
+
+
+# Access the command-line arguments
+all_train_splits_txt = args.train_splits
+all_subsampling_method_txt = args.subsampling_methods
+all_subsampling_size = args.subsampling_sizes
+all_epsilons = args.epsilons
+all_ref_measure_size = args.ref_measure_sizes
+all_ref_measure_txt = args.ref_measure_texts
+numerateur = args.numerateur
+denominateur = args.denominateur
 
 #################################################
 ################### FUNCTIONS ###################
@@ -204,7 +251,9 @@ def clouds_to_dual_sinkhorn(points,
                             has_aux=False,
                             sinkhorn_solver_kwargs=None, 
                             parallel: bool = True,
-                            batch_size: int = -1):
+                            batch_size: int = -1,
+                            numerator: int = 1,
+                            denominator: int = 1):
   """Compute the embeddings of the clouds with regularized OT towards mu.
   
   Args:
@@ -252,6 +301,13 @@ def clouds_to_dual_sinkhorn(points,
     list_of_g_potentials = []
     clouds, weights = points.unpack()
     sinkhorn_single_cloud = jax.jit(sinkhorn_single_cloud)
+
+    start_idx = (numerator - 1) * len(clouds) // denominator
+    end_idx = numerator * len(clouds) // denominator
+
+    clouds = clouds[start_idx:end_idx]
+    weights = weights[start_idx:end_idx]
+
     for i in range(len(clouds)):
       ot_problem = sinkhorn_single_cloud(clouds[i], weights[i], init_dual)
       list_of_g_potentials.append(ot_problem.g)
@@ -269,7 +325,6 @@ def random_subsample_fn(X: np.ndarray, size: int) -> np.ndarray:
         np.ndarray: array of selected lines
     """
     indices = np.random.choice(len(X), size=size, replace=False)
-    
     return indices
 
 def mmd_subsample_fn(X: np.ndarray, size: int) -> np.ndarray:
@@ -360,7 +415,7 @@ def subsampling_blades(blades: np.ndarray, subsampling_points: np.ndarray, subsa
     Returns:
         np.ndarray: Array of np.arrays. Each np.array represents a blade subsampled.
     """
-    if subsampling_size > len(subsampling_points):
+    if subsampling_size > subsampling_points.shape[1]:
         raise ValueError("subsampling_size cannot exceed the length of subsampling_points")
 
     subsampled_blades = []
@@ -368,7 +423,7 @@ def subsampling_blades(blades: np.ndarray, subsampling_points: np.ndarray, subsa
         subsampled_blades.append(points[:subsampling_size])
     return np.array([blade[subsampled_indices] for blade, subsampled_indices in zip(blades, subsampled_blades)])
 
-def proceed_sinkhorn_algorithm(data: np.ndarray, epsilon, ref_measure) -> np.ndarray:
+def proceed_sinkhorn_algorithm(data: np.ndarray, epsilon, ref_measure, numerateur: int, denominateur: int ) -> np.ndarray:
     """For an array of clouds, perform Sinkhorn algorithm against the reference measure.
 
     Args:
@@ -392,11 +447,13 @@ def proceed_sinkhorn_algorithm(data: np.ndarray, epsilon, ref_measure) -> np.nda
     sinkhorn_potentials = clouds_to_dual_sinkhorn(points = x_cloud, mu = ref_measure, 
                                                     sinkhorn_solver_kwargs = sinkhorn_solver_kwargs, 
                                                     parallel = False, # going into the for loop
-                                                    batch_size = -1)
+                                                    batch_size = -1,
+                                                    numerator = numerateur,
+                                                    denominator = denominateur)
     
     return np.array(sinkhorn_potentials)
 
-def sample_points_on_sphere(num_points, radius=1, center=(0, 0, 0)):
+def sample_points_on_sphere(num_points, center, radius):
     # Generate random values for θ and φ
     theta = np.random.default_rng().uniform(0, np.pi, num_points)
     phi = np.random.default_rng().uniform(0, 2 * np.pi, num_points)
@@ -413,10 +470,22 @@ def sample_points_on_sphere(num_points, radius=1, center=(0, 0, 0)):
 
     return np.column_stack((x, y, z))
 
+def compute_center_of_blades(blades):
+   # Reshape the blades to have a single array with shape (num_blade * blade_size, 3)
+  combined_blades = np.concatenate(blades)
+  # Compute the mean center
+  mean_center = np.mean(combined_blades, axis=0)
+  # Compute the distances from each point to the mean center
+  distances = np.linalg.norm(combined_blades - mean_center, axis=1)
+  # Compute the radius of the smallest sphere
+  radius = np.max(distances)
+
+  return mean_center, radius
+
 def define_reference_measure(data, ref_measure_size, 
                              random_from_data: bool, 
-                             gaussian: bool, mu, sigma, 
-                             sphere: bool, center, radius) -> WeightedPointCloud:
+                             sphere: bool,
+                             disk: bool) -> WeightedPointCloud:
     """Defines the reference measure to use. 
     None of those reference measures are data driven for now.
     Args:
@@ -424,16 +493,20 @@ def define_reference_measure(data, ref_measure_size,
     Returns:
         WeightedPointCloud object.
     """
+    random_index = 0
     # Reference measure is a random blade from the data
     if random_from_data:
-        ref_measure = random.choice(data)
-    # Reference measure is a Gaussian of dimension the data
-    elif gaussian:
-       ref_measure = np.random.default_rng().normal(mu, sigma, size = ref_measure_size)
+        random_index = np.random.randint(0, len(data))
+        ref_measure = data[random_index]
     # Refernce measure is a sphere
     elif sphere:
-       ref_measure = sample_points_on_sphere(num_points = ref_measure_size, raidus = radius, center = center)
-    
+       center, radius = compute_center_of_blades(data)
+       ref_measure = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
+    elif disk:
+       center, radius = compute_center_of_blades(data)
+       ref_measure = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
+       ref_measure[:, 2] = ref_measure[:, 2]*0
+
     ref_measure_cloud = WeightedPointCloud(
        cloud=jnp.array(ref_measure),
        weights=jnp.ones(len(ref_measure))
@@ -441,74 +514,105 @@ def define_reference_measure(data, ref_measure_size,
 
     return ref_measure_cloud
 
-@profile
+#@profile
 def save_sinkhorn_potentials(problem, problem_txt, test, 
-                             ref_measure_txt: str, ref_measure_size: int, mu, sigma, center, radius,
+                             ref_measure_txt: str, ref_measure_size: int,
                              epsilon, epsilon_txt: str,
                              subsampling_size: int, subsampling_size_txt: str,
                              subsampling_method, subsampling_method_txt: str,
-                             precomputed_indices,
-                             path_to_rotor37):
+                             precomputed_indices_train,
+                             precomputed_indices_test,
+                             path_to_rotor37,
+                             numerateur: int,
+                             denominateur: int):
     
-    start_time = measure_time()
+    start_time_train = measure_time()
 
     # Import the blades
     raw_data = import_blades(problem = problem, path = path_to_rotor37)
 
     # Subsample the blades
     if subsampling_method == "precomputed":
-       train_data = subsampling_blades(blades = raw_data, subsampling_points = precomputed_indices)
+       train_data = subsampling_blades(blades = raw_data, subsampling_points = precomputed_indices_train, subsampling_size = subsampling_size)
     elif subsampling_method == None:
-       pass
+       train_data = raw_data
     else:
        indices = select_subsampling_points(blades = raw_data, subsample_size = subsampling_size, subsample_method = subsampling_method)
-       train_data = subsampling_blades(blades = raw_data, subsampling_points = indices)
+       train_data = subsampling_blades(blades = raw_data, subsampling_points = indices, subsampling_size = subsampling_size)
 
     # Define reference measure
     if ref_measure_txt == "RandomRefMeasure":
        random_bool = True
-       gaussian_bool = False
+       disk_bool = False
        sphere_bool = False
-    elif ref_measure_txt == "GaussianRefMeasure":
+    elif ref_measure_txt == "DiskRefMeasure":
        random_bool = False
-       gaussian_bool = True
+       disk_bool = True
        sphere_bool = False
     elif ref_measure_txt == "SphereRefMeasure":
        random_bool = False
-       gaussian_bool = False
+       disk_bool = False
        sphere_bool = True
-    mu_cloud = define_reference_measure(data = train_data, ref_measure_size = ref_measure_size,
+    mu_cloud, random_index = define_reference_measure(data = train_data, ref_measure_size = ref_measure_size,
                                         random_from_data = random_bool, 
-                                        gaussian = gaussian_bool, mu = mu, sigma = sigma, 
-                                        sphere = sphere_bool, center = center, radius = radius)
+                                        sphere = sphere_bool, 
+                                        disk = disk_bool)
+    ref_measure_length = len(mu_cloud)
     
     # Compute Sinkhorn Potentials
-    train_potentials = proceed_sinkhorn_algorithm(data = train_data, epsilon = epsilon, ref_measure = mu_cloud)
+    train_potentials = proceed_sinkhorn_algorithm(data = train_data, epsilon = epsilon, ref_measure = mu_cloud,
+                                                  numerateur = numerateur,
+                                                  denominateur = denominateur)
 
-    execution_time = measure_time() - start_time
+    execution_time_train = measure_time() - start_time_train
 
     # Save the data
     folder_path = "Save_Sinkhorn/" + problem_txt + "/" + subsampling_method_txt + "/" + subsampling_size_txt
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    file_name = "sinkhorn_potentials_" + problem_txt + "_" + subsampling_method_txt + "_" + subsampling_size_txt + "_epsilon" + epsilon_txt + "_" + ref_measure_txt + str(ref_measure_size) + ".npy"
+    file_name = "sinkhorn_potentials_" + problem_txt + "_" + subsampling_method_txt + "_" + subsampling_size_txt + "_epsilon" + epsilon_txt + "_" + ref_measure_txt + str(ref_measure_size) + "_cut_" + str(numerateur) + "_" + str(denominateur) + ".npy"
     np.save(os.path.join(folder_path, file_name), train_potentials)
 
+    if test is not None:
+      start_time_test = measure_time()
+      test_raw_data = import_blades(problem = test, path = path_to_rotor37)
+      if subsampling_method == "precomputed":
+        test_data = subsampling_blades(blades = test_raw_data, subsampling_points = precomputed_indices_test, subsampling_size = subsampling_size)
+      elif subsampling_method == None:
+        test_data = test_raw_data
+      else:
+        indices = select_subsampling_points(blades = test_raw_data, subsample_size = subsampling_size, subsample_method = subsampling_method)
+        test_data = subsampling_blades(blades = test_raw_data, subsampling_points = indices, subsampling_size = subsampling_size)
+      
+      test_potentials = proceed_sinkhorn_algorithm(data = test_data, epsilon = epsilon, ref_measure = mu_cloud,
+                                                   numerateur = numerateur,
+                                                   denominateur = denominateur)
+
+      # Save the data
+      folder_path = "Save_Sinkhorn/" + problem_txt + "/" + subsampling_method_txt + "/" + subsampling_size_txt
+      if not os.path.exists(folder_path):
+          os.makedirs(folder_path)
+      file_name = "sinkhorn_potentials_test_" + problem_txt + "_" + subsampling_method_txt + "_" + subsampling_size_txt + "_epsilon" + epsilon_txt + "_" + ref_measure_txt + str(ref_measure_size) + "_cut_" + str(numerateur) + "_" + str(denominateur) + ".npy"
+      print(file_name)
+      np.save(os.path.join(folder_path, file_name), test_potentials)
+    
+      execution_time_test = measure_time() - start_time_test
+      
     # Save metadata
-    metadata = {"problem": problem_txt,
-                "reference_measure": ref_measure_txt,
-                "epsilon": epsilon_txt,
-                "subsampling_method" : subsampling_method_txt,
-                "subsampling_size" : subsampling_size_txt,
-                "execution_time": execution_time,
-                }
-    metadat_file_name = "sinkhorn_metadata_" + problem_txt + "_" + subsampling_method_txt + "_" + subsampling_size_txt + "_epsilon" + epsilon_txt + "_" + ref_measure_txt + str(ref_measure_size) + ".json"
+    metadata = {"problem": {"split": problem_txt,
+                            "size": subsampling_size_txt,
+                            "subsampling_method": subsampling_method_txt,
+                            "epsilon": epsilon_txt,
+                            "reference_measure": ref_measure_txt,
+                            "reference_measure_size": ref_measure_length},
+                "sinkhorn": {"train_time": execution_time_train,
+                             "test_time": execution_time_test},
+                "regression": {}}
+
+    metadat_file_name = "sinkhorn_metadata_" + problem_txt + "_" + subsampling_method_txt + "_" + subsampling_size_txt + "_epsilon" + epsilon_txt + "_" + ref_measure_txt + str(ref_measure_size) + "_cut_" + str(numerateur) + "_" + str(denominateur) + ".json"
     with open(os.path.join(folder_path, metadat_file_name), "w") as json_file:
         json.dump(metadata, json_file)
 
-    if test is not None:
-       pass # To be coded
-    
     # For memory savings
     del raw_data
     del mu_cloud
@@ -518,13 +622,13 @@ def save_sinkhorn_potentials(problem, problem_txt, test,
     del folder_path
     del metadat_file_name
     del file_name
+
     
 #################################################
 ################## Needed data ##################
 #################################################
 
 if __name__ == "__main__":
-
   ## Define train and test splits possible.
   train8 = [154,174,383,501,524,593,711,732]
   train16 = [76,124,130,154,157,174,383,501,524,593,711,732,798,800,959,987]
@@ -539,35 +643,63 @@ if __name__ == "__main__":
   optimized_indices2000 = np.load("indices_train.npy")
   optimized_indices2000 = optimized_indices2000.astype(int)
 
-  random_indices2000 = np.load("")
-  random_indices2000 = random_indices2000.astype(int)
+  optimized_indices2000_test = np.load("indices_test.npy")
+  optimized_indices2000_test = optimized_indices2000_test.astype(int)
+  
+  all_train_splits = []
+  #all_train_splits_txt = ["train1000"]
+  for name in all_train_splits_txt:
+    # Access the object using globals() if the objects are in the global scope
+    obj = globals().get(name)
+    # Or use locals() if the objects are in the local scope
+    # obj = locals().get(name)
+    # Append the object to the list
+    all_train_splits.append(obj)
+  
 
-  all_train_splits = [train8, train16, train32, train64, train125, train250, train500, train1000]
-  all_train_splits_txt = ["train8", "train16", "train32", "train64", "train125", "train250", "train500", "train1000"]
 
-  all_subsampling_method = ["precomputed", "precomputed", None]
-  all_precomputed_indices = [optimized_indices2000, random_indices2000, None]
-  all_subsampling_method_txt = ["OptimizedSample", "RandomSample", "NotSampled"]
+  all_subsampling_method = []
+  #all_subsampling_method_txt = ["FullSample"]
+  for name in all_subsampling_method_txt:
+    if name == "OptimizedSample":
+      all_subsampling_method.append("precomputed")
+    if name == "RandomSample":
+      all_subsampling_method.append(random_subsample_fn)
+    if name == "NotSampled":
+       all_subsampling_method.append(None)
+  
+  print(all_subsampling_method)
+  print(all_subsampling_method_txt)
 
-  all_subsampling_size = [10, 50, 100, 300, 500, 800, 1000, 2000, 5000, 10000, 20000]
-  all_subsampling_size_txt = ["Size10", "Size50", "Size100", "Size300", "Size500", "Size800", "Size1000", "Size2000", "Size5000", "Size10000", "Size20000"]
+  #all_subsampling_size = [0]
+  all_subsampling_size_txt = []
+  for size in all_subsampling_size:
+    if size == 29773:
+      all_subsampling_size_txt.append("FullSize")
+    else:
+      all_subsampling_size_txt.append("Size"+str(size))
 
-  all_epsilons = [0.01, 1, 10, 100, 1000]
-  all_epsilon_txt = ["001", "1", "10", "100", "1000"]
+  #all_epsilons = [1e-3, 1e-4, 1e-5, 1e-6]
+  all_epsilon_txt = []
+  for epsilon in all_epsilons:
+     all_epsilon_txt.append(str(epsilon))
 
-  all_ref_measure_txt = ["RandomRefMeasure", "GaussianRefMeasure", "SphereRefMeasure"]
-  all_ref_measure_size = [10, 100, 1000, 10000]
+  #all_ref_measure_txt = ["SphereRefMeasure", "DiskRefMeasure"]
+  #all_ref_measure_size = [10]
 
   for train_split, train_split_txt in zip(all_train_splits, all_train_splits_txt):
-    for subsampling_method, precomputed_indices, subsampling_method_txt in zip(all_subsampling_method, all_precomputed_indices, all_subsampling_method_txt):
+    for subsampling_method, subsampling_method_txt in zip(all_subsampling_method, all_subsampling_method_txt):
         for subsampling_size, subsampling_size_txt in zip(all_subsampling_size, all_subsampling_size_txt):
           for epsilon, epsilon_txt in zip(all_epsilons, all_epsilon_txt):
               for ref_measure_txt in all_ref_measure_txt:
                   for ref_measure_size in all_ref_measure_size:
-                    save_sinkhorn_potentials(problem = train_split, problem_txt = train_split_txt, test = None,
-                                            ref_measure_txt = ref_measure_txt, ref_measure_size = ref_measure_size, mu = np.array([0, 0, 0]), sigma = np.array([1, 1, 1]), center = (0.1, 0.1, 0.1), radius = 0.04,
+                    save_sinkhorn_potentials(problem = train_split, problem_txt = train_split_txt, test = test,
+                                            ref_measure_txt = ref_measure_txt, ref_measure_size = ref_measure_size,
                                             epsilon = epsilon, epsilon_txt = epsilon_txt,
                                             subsampling_size = subsampling_size, subsampling_size_txt = subsampling_size_txt,
                                             subsampling_method = subsampling_method, subsampling_method_txt = subsampling_method_txt,
-                                            precomputed_indices = precomputed_indices,
-                                            path_to_rotor37 = None)    
+                                            precomputed_indices_train = optimized_indices2000,
+                                            precomputed_indices_test = optimized_indices2000_test,
+                                            path_to_rotor37 = None,
+                                            numerateur = numerateur,
+                                            denominateur = denominateur)

@@ -1,16 +1,20 @@
 # Experimental part
 
 ## À faire
-- [ ] Faire le code pour plot à partir du dictionnaire
-- [ ] Calculer avec des epsilon de 1e-9
-- [ ] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
-  - [ ] Matern pour les GP est très long à résoudre
+- [ ] Beaucoup trop d'hyperparamètres à optimiser... [voir?](https://github.com/bayesian-optimization/BayesianOptimization?tab=readme-ov-file)
+- [ ] Faire le code pour plot à partir du dictionnaire.
+- [ ] Calculer avec des epsilon de 1e-9.
 - [ ] [Analyser les résidus](#analyser-les-résidus)
-- [ ] Faire le modèle de référence
+- [x] Faire le modèle de référence
+  - [ ] Les performances du modèles change en fonction de la manière de sous-échantillonnage et la quantité de points retenus.
+  - [ ] Un autre hyperparamètre est la dimension de la PCA.
+  - [ ] Entraîner des GP anisotropic prend beacoup de temps, une dimension de 20 pour la PCA est raisonnable.
+  - [ ] Un désavantage de ce modèle est de ne pas fonctionner si les aubes n'ont pas toutes exactement le même nombre de points. On devrait donc faire le noayux Sinkhorn sur des aubes avec un nombre de points différents.
 - [ ] Tracer une aube sous échantilloner
-- [ ] Fit un modèle par sortie
-- [ ] Découper le script en plusieurs morceaux, puis faire un script bash.
+- [ ] Fit un modèle par sortie.
 - [ ] Réécrire le fichier de export.
+  - [ ] Le code pour sous-échantillonner est probablement faux.
+  - [ ] Il y a beacoup de choses à simplifier.
 
 ## À faire si on a beaucoup de temps
 - [ ] Utiliser une sphère et un disque comme mesure de référence
@@ -20,6 +24,9 @@
 - [ ] Utiliser le sliced Wasserstein kernel
 
 ## Listes des choses faites
+- [x] Découper le script en plusieurs morceaux, puis faire un script bash.
+- [x] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
+  - [x] Matern pour les GP est très long à résoudre
 - [x] Normalizer les potentiels
 - [x] Vérifier que l'ordre des tests est bien le même
 - [x] Faire un fichier functions.py qu'on importe dans un notebook.

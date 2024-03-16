@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import time
+import time 
 import os
 
 # Specifically for the Rotor37 Dataset importation and visualization
@@ -30,3 +30,16 @@ import GPy
 import catboost
 import xgboost as xgb
 from sklearn.kernel_ridge import KernelRidge
+
+# Performing Optimal Transport and Sinkhorn Algorithm
+from dataclasses import dataclass
+from dataclasses import replace
+from functools import partial
+import jax
+import jax.numpy as jnp
+from flax import struct
+import optax as ox
+from ott.geometry.pointcloud import PointCloud
+from ott.problems.linear.linear_problem import LinearProblem
+from ott.solvers.linear.sinkhorn import Sinkhorn
+

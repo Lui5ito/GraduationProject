@@ -13,7 +13,38 @@ def read_cgns_coordinates(file_path):
 
     return x, y, z
 
-def blades(split: list, sample_size:int, path:str = None, sample_fn = None) -> list:
+def blades2(ids: list, path:str = None,) -> np.array:
+    """Imports the blade which id are in split..
+
+    Args:
+        split(list): list of blade to consider
+        path(str): add to the path
+        sample_fn(func): function that subsample a blade
+
+    Returns:
+        list: list of np.arrays. One np.array represents a blade.
+    """
+
+    padded_split = [str(i).zfill(9) for i in ids]
+
+    distributions = []
+
+    for id in padded_split:
+        ## File paths Personal Computer
+        cgns_file_path = f'Rotor37/dataset/samples/sample_{id}/meshes/mesh_000000000.cgns'
+        if path is not None:
+            cgns_file_path = path + cgns_file_path
+        ## Computing the coordinates
+        x, y, z = read_cgns_coordinates(cgns_file_path)
+        blade = np.column_stack((x, y, z))
+        ## Adding to our data
+        distributions.append(blade)
+    
+    return np.array(distributions)
+
+
+
+def blades1(split: list, sample_size:int, path:str = None, sample_fn = None) -> list:
     """Imports the blade which id are in split..
 
     Args:
@@ -47,6 +78,51 @@ def blades(split: list, sample_size:int, path:str = None, sample_fn = None) -> l
         distributions.append(blade)
     
     return distributions
+
+def scalars(ids, test:bool):
+    if not test:
+        padded_split = [str(i).zfill(9) for i in ids]
+        # Import scalars
+        efficiency = []
+        omega = []
+        P = []
+        compression_ratio = []
+        massflow = [] 
+        for id in padded_split:
+            coefficient_file_path = f'Rotor37/dataset/samples/sample_{id}/scalars.csv'
+            scalars = pd.read_csv(coefficient_file_path)
+            ## Adding to our data
+            efficiency.append(scalars["Efficiency"][0])
+            omega.append(scalars["Omega"][0])
+            P.append(scalars["P"][0])
+            compression_ratio.append(scalars["Compression_ratio"][0])
+            massflow.append(scalars["Massflow"][0])
+        
+        omega = np.array(omega).reshape(-1, 1)
+        P = np.array(P).reshape(-1, 1)
+        efficiency = np.array(efficiency).reshape(-1, 1)
+        massflow = np.array(massflow).reshape(-1, 1)
+        compression_ratio = np.array(compression_ratio).reshape(-1, 1)
+    else:
+        padded_split = [str(i).zfill(9) for i in ids]
+        # Import scalars
+        omega = []
+        P = []
+        for id in padded_split:
+            coefficient_file_path = f'Rotor37/dataset/samples/sample_{id}/scalars.csv'
+            scalars = pd.read_csv(coefficient_file_path)
+            ## Adding to our data
+            omega.append(scalars["Omega"][0])
+            P.append(scalars["P"][0])
+        with h5py.File('Rotor37/scalars_test.h5', 'r') as file:
+            output_scalars = np.array(file['output_scalars'])
+            massflow = np.mean(output_scalars[:, :2], axis=1).reshape(-1, 1)
+            compression_ratio = output_scalars[:, 2].reshape(-1, 1)
+            efficiency = output_scalars[:, 3].reshape(-1, 1)
+        omega = np.array(omega).reshape(-1, 1)
+        P = np.array(P).reshape(-1, 1)
+
+    return np.hstack([omega, P]), np.hstack([efficiency, massflow, compression_ratio])
 
 def train_data(problem, problem_txt, test, 
                              ref_measure_txt: str, ref_measure_size: int, mu, sigma, center, radius,
@@ -148,17 +224,20 @@ def test_data(problem, problem_txt, test,
         P.append(scalars["P"][0])
         #compression_ratio.append(scalars["Compression_ratio"][0])
         #massflow.append(scalars["Massflow"][0])
+
+    array_omega = np.array(omega)
+    array_P = np.array(P)
+    array_omega_P = np.column_stack((array_omega, array_P))
+
     with h5py.File('Rotor37/scalars_test.h5', 'r') as file:
         output_scalars = np.array(file['output_scalars'])
         massflow = np.mean(output_scalars[:, :2], axis=1).tolist()
         compression_ratio = output_scalars[:, 2].tolist()
         efficiency = output_scalars[:, 3].tolist()
-        
         input_scalars = np.array(file['input_scalars'])
-        omega2 = input_scalars[:, 0].tolist()
-        P2 = input_scalars[:, 1].tolist()
-        if not (omega2 == omega) or (P2 == P):
-            raise ImportError("The test values are not in the same order as the Sinkhorn potentials.")
+    
+    if not np.array_equal(array_omega_P, input_scalars):
+        raise ImportError("The test values are not in the same order as the Sinkhorn potentials.")
     
     return sinkhorn_potentials, efficiency, omega, P, compression_ratio, massflow, metadata
 
