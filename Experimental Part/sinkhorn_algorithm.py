@@ -290,7 +290,7 @@ def define_reference_measure(data, ref_measure_size,
     # Reference measure is a random blade from the data
     if random_from_data:
         #random_index = np.random.randint(0, len(data))
-        ref_measure = data[0]
+        ref_measure = data[0, :, :]
     # Refernce measure is a sphere
     elif sphere:
        center, radius = compute_center_of_blades(data)
@@ -299,6 +299,7 @@ def define_reference_measure(data, ref_measure_size,
        center, radius = compute_center_of_blades(data)
        ref_measure = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
        ref_measure[:, 2] = ref_measure[:, 2]*0
+    
 
     ref_measure_cloud = WeightedPointCloud(
        cloud=jnp.array(ref_measure),

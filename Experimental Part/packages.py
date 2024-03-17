@@ -5,6 +5,8 @@ import pandas as pd
 import seaborn as sns
 import time 
 import os
+import argparse
+
 
 # Specifically for the Rotor37 Dataset importation and visualization
 import h5py
