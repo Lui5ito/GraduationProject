@@ -125,8 +125,7 @@ def data_for_regression(ids, path:str, test:bool, path_to_rotor37:str, path_to_m
 
 from pathlib import Path
 
-def load_data_fn(split: str, directory:str ):
-
+def load_data_fn(split: str, directory: str ):
     meshes_file = directory / f"blade_meshes_{split}.h5"
     f = h5py.File(meshes_file, "r")
     X_points = np.array(f["points"])
