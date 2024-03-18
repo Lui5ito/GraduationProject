@@ -5,11 +5,7 @@
 - [ ] Faire le code pour plot à partir du dictionnaire.
 - [ ] Calculer avec des epsilon de 1e-9.
 - [ ] [Analyser les résidus](#analyser-les-résidus)
-- [x] Faire le modèle de référence
-  - [ ] Les performances du modèles change en fonction de la manière de sous-échantillonnage et la quantité de points retenus.
-  - [ ] Un autre hyperparamètre est la dimension de la PCA.
-  - [ ] Entraîner des GP anisotropic prend beacoup de temps, une dimension de 20 pour la PCA est raisonnable.
-  - [ ] Un désavantage de ce modèle est de ne pas fonctionner si les aubes n'ont pas toutes exactement le même nombre de points. On devrait donc faire le noayux Sinkhorn sur des aubes avec un nombre de points différents.
+- [ ] Un désavantage du modèle de référence est de ne pas fonctionner si les aubes n'ont pas toutes exactement le même nombre de points. On devrait donc faire le noyau Sinkhorn sur des aubes avec un nombre de points différents ?
 - [ ] Tracer une aube sous échantilloner
 - [ ] Fit un modèle par sortie.
 - [ ] Réécrire le fichier de export.
@@ -24,6 +20,10 @@
 - [ ] Utiliser le sliced Wasserstein kernel
 
 ## Listes des choses faites
+- [x] Faire le modèle de référence
+  - [x] Les performances du modèles change en fonction de la manière de sous-échantillonnage et la quantité de points retenus -> Manière dint est crée le dataset.
+  - [x] Un autre hyperparamètre est la dimension de la PCA.
+  - [x] Entraîner des GP anisotropic prend beacoup de temps, une dimension de 20 pour la PCA est raisonnable.
 - [x] Découper le script en plusieurs morceaux, puis faire un script bash.
 - [x] Remplacer les noyaux RBF par des Matern 5/2 (évaluer la différence de performance ?)
   - [x] Matern pour les GP est très long à résoudre
