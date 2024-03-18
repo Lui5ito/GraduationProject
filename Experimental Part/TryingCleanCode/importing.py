@@ -120,3 +120,39 @@ def data_for_regression(ids, path:str, test:bool, path_to_rotor37:str, path_to_m
     input_scalars, output_scalars = r37_scalars(ids = ids, test = test, path = path_to_rotor37)
     
     return sinkhorn_potentials, input_scalars, output_scalars, metadata
+
+
+
+from pathlib import Path
+
+def load_data_fn(split: str, directory:str ):
+
+    meshes_file = directory / f"blade_meshes_{split}.h5"
+    f = h5py.File(meshes_file, "r")
+    X_points = np.array(f["points"])
+    X_faces = np.array(f["faces"])
+    Y_fields = np.array(f["output_fields"])
+    f.close()
+
+    scalars_file = directory / f"scalars_{split}.h5"
+    f = h5py.File(scalars_file, "r")
+    x_scalars = np.array(f["input_scalars"])
+    y_scalars = np.array(f["output_scalars"])
+    f.close()
+
+    data = {
+        "X_points": X_points,
+        "Y_fields": Y_fields,
+        "X_faces": X_faces,
+        "x_scalars": x_scalars,
+        "y_scalars": y_scalars,
+        "x_scalars_names": ["omega", "pressure"],
+        "y_scalars_names": [
+            "inlet_massflow",
+            "outlet_massflow",
+            "compression_rate",
+            "isentropic_efficiency",
+            "polyentropic_efficiency",
+        ],
+    }
+    return data
