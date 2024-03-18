@@ -65,7 +65,7 @@ if __name__ == "__main__":
     # Subsample the blades
     if subsampling_method == "Optimized":
         precomputed_train = np.load("indices_train.npy").astype(int)
-        train_data = raw_data[np.arange(raw_data.shape[0])[:, None], precomputed_train[:, :subsampling_size], :]
+        train_data = raw_data[np.arange(raw_data.shape[0])[:, None], precomputed_train[train, :subsampling_size], :]
     if subsampling_method == "OneRandom":
         random_indices = np.random.choice(29773, size = subsampling_size, replace = False)
         train_data = raw_data[:, random_indices, :]
