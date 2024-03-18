@@ -213,7 +213,7 @@ def clouds_to_dual_sinkhorn(points,
     g_potentials_array = jnp.stack(list_of_g_potentials)
     return g_potentials_array
 
-def proceed_sinkhorn_algorithm(data: np.ndarray, epsilon, ref_measure, numerateur: int, denominateur: int ) -> np.ndarray:
+def proceed(data: np.ndarray, epsilon, ref_measure, numerateur: int, denominateur: int ) -> np.ndarray:
     """For an array of clouds, perform Sinkhorn algorithm against the reference measure.
 
     Args:
@@ -275,10 +275,7 @@ def compute_center_of_blades(blades):
 
 
 
-def define_reference_measure(data, ref_measure_size, 
-                             random_from_data: bool, 
-                             sphere: bool,
-                             disk: bool) -> WeightedPointCloud:
+def define_reference_measure(data, ref_measure: str, ref_measure_size) -> WeightedPointCloud:
     """Defines the reference measure to use. 
     None of those reference measures are data driven for now.
     Args:
@@ -286,23 +283,23 @@ def define_reference_measure(data, ref_measure_size,
     Returns:
         WeightedPointCloud object.
     """
-    # Reference measure is a random blade from the data
-    if random_from_data:
-        #random_index = np.random.randint(0, len(data))
-        ref_measure = data[0, :, :]
-    # Refernce measure is a sphere
-    elif sphere:
-       center, radius = compute_center_of_blades(data)
-       ref_measure = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
-    elif disk:
-       center, radius = compute_center_of_blades(data)
-       ref_measure = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
-       ref_measure[:, 2] = ref_measure[:, 2]*0
+    if ref_measure == "blade0":
+      ref_measure_cloud = data[0, :, :]
+    elif ref_measure == "sphere":
+      center, radius = compute_center_of_blades(data)
+      ref_measure_cloud = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
+    elif ref_measure == "disk":
+      center, radius = compute_center_of_blades(data)
+      ref_measure_cloud = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
+      ref_measure_cloud[:, 2] = ref_measure_cloud[:, 2]*0
+    elif ref_measure == "random":
+      ref_measure_cloud = data[np.random.randint(0, len(data)), :, :]
+    else:
+      raise ValueError("The reference measure name must be one of: blade0, disk, sphere, random.")
     
-
     ref_measure_cloud = WeightedPointCloud(
-       cloud=jnp.array(ref_measure),
-       weights=jnp.ones(len(ref_measure))
+       cloud=jnp.array(ref_measure_cloud),
+       weights=jnp.ones(len(ref_measure_cloud))
     )
 
     return ref_measure_cloud
