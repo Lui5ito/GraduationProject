@@ -100,7 +100,7 @@ if __name__ == "__main__":
     if subsampling_method == "MultipleRandom":
         test_data = test_raw_data[:, np.random.choice(29773, size = subsampling_size, replace = False), :]
     if subsampling_method == "NoSubsample":
-        test_data = test_raw_data
+        test_data = test_raw_datap
     # Compute the potentials
     test_potentials = sinkhorn.proceed(data = test_data, epsilon = epsilon, ref_measure = mu_cloud, numerateur = numerateur, denominateur = denominateur)
     stop_time_test = time.time() - start_time_test
