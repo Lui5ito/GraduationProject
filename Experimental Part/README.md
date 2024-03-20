@@ -18,6 +18,7 @@
 - [ ] Analyse de sensibilité, indices de Sobol
 - [ ] Coregionalized Gaussian Process
 - [ ] Utiliser le sliced Wasserstein kernel
+- [ ] Sinkhorn Algorithme avec pas le même nombre de points par aube ?
 
 ## Listes des choses faites
 - [x] Faire le modèle de référence
