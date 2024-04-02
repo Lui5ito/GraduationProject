@@ -1,6 +1,6 @@
 # GraduationProject
 
-![sphereAsRef3](https://github.com/Lui5ito/GraduationProject/assets/104061901/48fc22e9-acee-42fd-be24-1ed53cfb3e00)
+![sphereAsRef3](https://github.com/Lui5ito/GraduationProject/assets/104061901/fb468526-9013-478e-ad7b-3b50a3492610)
 
 This repo contains my Master's end-of-year project, completed during my studies at ENSAI. It aims at reproducing experiments from the article "Gaussian Processes on Distributions based on Regularized Optimal Transport" and experiment on publicly available dataset.
 
