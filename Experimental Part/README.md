@@ -3,13 +3,13 @@ This folder contains the code for reproducing the results we found in our report
 
 **importing.py:** Stores functions that are useful for importing the Rotor37 dataset.\
 **sinkhorn.py:** Stores functions that are useful for the Sinkhorn Algorithm. Especially defining a reference measure and subsampling the blades.\
-**perform_sinkhorn.py:** A Python file that takes parser arguments. One call of this file perform one run of the Sinkhorn algorithm on train and test data, for given hyperparameters (train split, epsilon, reference measure, reference measure size, subsampling method, subsampling size). The potentials are saved in "npy" files for reusability.\
+**perform_sinkhorn.py:** A Python file that takes parser arguments. One call of this file perform one run of the Sinkhorn algorithm on train and test data, for given hyperparameters (train split, epsilon, reference measure, reference measure size, subsampling method, subsampling size). The potentials are saved in "npy" files for reusability.
 
 **Exploring_Rotor37.ipynb:** Notebook that shows how to access the data and plot a blade.\
-**Optimal_Transport_On_Blades.ipynb:** Notebook that performs Regularized Optimal Transport frorm one blade to another and from one blade to a reference measure (disk, sphere or uniform sphere). You can also find here, transport cost matrices and visuals of Sinkhorn potentials.\
+**Optimal_Transport_On_Blades.ipynb:** Notebook that performs Regularized Optimal Transport from one blade to another and from one blade to a reference measure (disk, sphere or uniform sphere). You can also find here, transport cost matrices and visuals of Sinkhorn potentials.\
 **Reference_Model.ipynb:** Here you can find the code for the reference model presented in our report.\
 **Regression_Sinkhorn_Kernel.ipynb:** Here we perform the regression task by importing the Sinkhorn potentials "npy" files. We also study the performance of the regression with multiple hyperparameters. Most of our results are contained in this files.\
-**Optimize_Reference_Measure.ipynb:** Our failed attempt to optimize the reference measure.\
+**Optimize_Reference_Measure.ipynb:** Our failed attempt to optimize the reference measure.
 
 **run.sh:** The bash script to run Sinkhorn algorithm on the Rotor37 dataset with multiple hyperparameters.
 
