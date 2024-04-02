@@ -19,11 +19,8 @@ plotly>=5.18.0
 numpy>=1.26.4
 pandas>=2.2.0
 scipy>=1.12.0
-joblib>=
 
 ## Machine Learning
 scikit-learn>=1.4.0
 gpy>=1.13.1
 
-## Memory Tracking
-memory_profiler >= 0.61.0
