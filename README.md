@@ -19,7 +19,7 @@ Our report exhibit the performance of the Sinkhorn kernel presented in the paper
 
 We found that the Sinkhorn kernel performs really well to predict the efficency, the massflow and the compression ratio of the blade.
 
-| <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/675c42de-0029-40f0-bc6c-2cfe88ca1391" alt="image" width="150" height="auto">  |  <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/657ca77b-000a-4168-ba2e-4bc19c616b4b" alt="image" width="150" height="auto">  |   <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/e988d141-8cf2-4638-bf18-0ec2ccd4c481" alt="image" width="150" height="auto">  | 
+| <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/675c42de-0029-40f0-bc6c-2cfe88ca1391" alt="image" width="200" height="auto">  |  <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/657ca77b-000a-4168-ba2e-4bc19c616b4b" alt="image" width="200" height="auto">  |   <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/e988d141-8cf2-4638-bf18-0ec2ccd4c481" alt="image" width="200" height="auto">  | 
 |:-:|:-:|:-:|
 | Efficiency, $EVS = 0.9895$ | Massflow, $EVS = 0.9983$ | Compression ratio, $EVS = 0.9983$ |
 
