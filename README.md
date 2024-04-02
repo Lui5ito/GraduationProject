@@ -4,9 +4,9 @@ This repo contains my Master's end-of-year project, completed during my studies 
 
 The article is available at: [Gaussian Processes on Distributions based on Regularized Optimal Transport](https://arxiv.org/abs/2210.06574)
 
-The first part of the project consisted of a *methododogical* part. The goal was to familiarize with the paper, the Optimal Transport theory and reproduce one of the experiment of the paper. Our written report, slides and Jupyter notebook can be found here.
+The first part of the project consisted of a *methododogical* part. The goal was to familiarize with the paper, the Optimal Transport theory and reproduce one of the experiment of the paper. Our written report, slides and Jupyter notebook can be found [here](https://github.com/Lui5ito/GraduationProject/tree/main/Methodological%20Part).
 
-The second part of the project, *experimental* part, is about applying the foundings of the paper on a real life dataset and compare the proposed method against established ones such as the Wasserstein distance.
+The second part of the project, *experimental* part, is about applying the foundings of the paper on a real life dataset and compare the proposed method against established ones such as the Wasserstein distance. We explored the [Rotor37](https://plaid-lib.readthedocs.io/en/latest/source/data_challenges/rotor37.html) dataset and our notebooks and codes are [here](https://github.com/Lui5ito/GraduationProject/tree/main/Experimental%20Part).
 
 | <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/076f6dc7-0fec-4b08-8823-244610d82705" alt="image" width="150" height="auto">  |  <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/dac8126d-2854-4b9f-929f-cbae6dca4cf7" alt="image" width="150" height="auto">  |   <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/37bd279e-9860-447b-8c73-aa59151c7f01" alt="image" width="150" height="auto">  | 
 |:-:|:-:|:-:|
