@@ -8,9 +8,9 @@ The first part of the project consisted of a *methododogical* part. The goal was
 
 The second part of the project, *experimental* part, is about applying the foundings of the paper on a real life dataset and compare the proposed method against established ones such as the Wasserstein distance.
 
-| <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/076f6dc7-0fec-4b08-8823-244610d82705" alt="image" width="150" height="auto">  |  <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/fb468526-9013-478e-ad7b-3b50a3492610" alt="image" width="150" height="auto">  |   <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/fb468526-9013-478e-ad7b-3b50a3492610" alt="image" width="150" height="auto">  | 
+| <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/076f6dc7-0fec-4b08-8823-244610d82705" alt="image" width="150" height="auto">  |  <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/23c93972-120e-46c8-8d41-66a440fdbe96" alt="image" width="150" height="auto">  |   <img src="https://github.com/Lui5ito/GraduationProject/assets/104061901/03ffda3f-a6d0-481c-b76e-d6494aeb8e83" alt="image" width="150" height="auto">  | 
 |:-:|:-:|:-:|
-| A blade | A blade with a disk as reference measure | A blade with a uniform sphere as reference measure |
+| A blade | Disk as reference measure | Uniform sphere as reference measure |
 
 
 ## Main results
