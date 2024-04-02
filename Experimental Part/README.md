@@ -14,7 +14,8 @@ This folder contains the code for reproducing the results we found in our report
 **run.sh:** The bash script to run Sinkhorn algorithm on the Rotor37 dataset with multiple hyperparameters.
 
 
-
+<br>
+<br>
 
 ## History
 The following is simply our notes during the project. Some are in French some are in English.
