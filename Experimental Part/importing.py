@@ -100,29 +100,3 @@ def r37_scalars(ids, test:bool = False) -> tuple:
             efficiency = output_scalars[:, 3].reshape(-1, 1)
 
     return np.hstack([omega, P]), np.hstack([efficiency, massflow, compression_ratio])   
-
-def data_for_regression(ids, path:str, test:bool, path_to_rotor37:str, path_to_metadata:str = None):
-    """For the Rotor37 dataset, imports the data necessary for the regression task.
-
-    Args:
-        ids(list): list of int.
-        path(str): Path to the saved Sinkhorn potentials.
-        test(bool): If the data is for test or not.
-        path_to_rotor_37: Path to the saved dataset.
-        path_to_metadata: Path to the saved metadata.
-
-    Returns:
-        np.array: The array of the saved Sinkhorn potentials
-        np.array: The array of the input scalars
-    """
-    # Import Sinkhorn Potentials
-    if not path_to_metadata == None:
-        with open(path_to_metadata) as f:
-            metadata = json.load(f)
-    
-    sinkhorn_potentials = np.load(path)
-    
-    # Import scalars
-    input_scalars, output_scalars = r37_scalars(ids = ids, test = test, path = path_to_rotor37)
-    
-    return sinkhorn_potentials, input_scalars, output_scalars, metadata
