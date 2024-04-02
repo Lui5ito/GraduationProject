@@ -1,6 +1,23 @@
 # Experimental part
+This folder contains the code for reproducing the results we found in our report. We give a small description of each files:
 
-## À faire
+**importing.py:** Stores functions that are useful for importing the Rotor37 dataset.
+**sinkhorn.py:** Stores functions that are useful for the Sinkhorn Algorithm. Especially defining a reference measure and subsampling the blades.
+**perform_sinkhorn.py:** A Python file that takes parser arguments. One call of this file perform one run of the Sinkhorn algorithm on train and test data, for given hyperparameters (train split, epsilon, reference measure, reference measure size, subsampling method, subsampling size). The potentials are saved in "npy" files for reusability.
+
+**Exploring_Rotor37.ipynb:** Notebook that shows how to access the data and plot a blade.
+**Optimal_Transport_On_Blades.ipynb:** Notebook that performs Regularized Optimal Transport frorm one blade to another and from one blade to a reference measure (disk, sphere or uniform sphere). You can also find here, transport cost matrices and visuals of Sinkhorn potentials.
+**Reference_Model.ipynb:** Here you can find the code for the reference model presented in our report.
+**Regression_Sinkhorn_Kernel.ipynb:** Here we perform the regression task by importing the Sinkhorn potentials "npy" files. We also study the performance of the regression with multiple hyperparameters. Most of our results are contained in this files.
+**Optimize_Reference_Measure.ipynb:** Our failed attempt to optimize the reference measure.
+
+**run.sh:** The bash script to run Sinkhorn algorithm on the Rotor37 dataset with multiple hyperparameters.
+
+
+
+
+
+### À faire
 - [ ] Beaucoup trop d'hyperparamètres à optimiser... [voir?](https://github.com/bayesian-optimization/BayesianOptimization?tab=readme-ov-file)
 - [ ] Faire le code pour plot à partir du dictionnaire.
 - [ ] Calculer avec des epsilon de 1e-9.
@@ -12,7 +29,7 @@
   - [ ] Le code pour sous-échantillonner est probablement faux.
   - [ ] Il y a beacoup de choses à simplifier.
 
-## À faire si on a beaucoup de temps
+### À faire si on a beaucoup de temps
 - [ ] Utiliser une sphère et un disque comme mesure de référence
 - [ ] Barycentre des distributions comme mesure de référence
 - [ ] Analyse de sensibilité, indices de Sobol
@@ -20,7 +37,7 @@
 - [ ] Utiliser le sliced Wasserstein kernel
 - [ ] Sinkhorn Algorithme avec pas le même nombre de points par aube ?
 
-## Listes des choses faites
+### Listes des choses faites
 - [x] Faire le modèle de référence
   - [x] Les performances du modèles change en fonction de la manière de sous-échantillonnage et la quantité de points retenus -> Manière dint est crée le dataset.
   - [x] Un autre hyperparamètre est la dimension de la PCA.
@@ -68,7 +85,7 @@
   - [ ] In Boosting models ?
 
 
-###### Analyser les résidus
+### Analyser les résidus
   - [ ] Statistiques: mean, std
   - [ ] Shapiro-Wilk test: check for normality.
   - [ ] Durbin-Watson test: check for autocorrelation.
@@ -94,7 +111,7 @@ print("Durbin-Watson test statistic:", durbin_watson_stat)
 ```
 
 
-## Questions ❓
+### Questions ❓
 - [ ] Is the kernel **really** computing the norm in L2(U) ? The RBF and Matern kernels in scitkitlearn uses distance between two observations. The distance used is the Euclidian distance and therefore we indeed compute the Sinkhorn Kernel
   - [x] Try one kernel for all and look if the results are different -> Results are the same
   - [ ] Try to implement the norm of L2(U) and compute the kernel on that
@@ -103,7 +120,7 @@ print("Durbin-Watson test statistic:", durbin_watson_stat)
   - [ ] How can we quantify the importance of each feature in the regression ?
 
 
-## On measuring the quantity of RAM needed
+### On measuring the quantity of RAM needed
 We are using the package [memory_profiler](https://github.com/pythonprofilers/memory_profiler/tree/master). 
 We cannot have the plot and the memory consumption for each call of the function.
 If you want to have the memory line by line for each call you must have
@@ -128,7 +145,7 @@ for plotting the time evolution of the RAM.
 Shows that we have memory leaks when using Jax. Jax also provides a memory profiler.
 - [ ] Understand where is the leak coming from.
 
-## Structure of the saved files for Sinkhorn potentials
+### Structure of the saved files for Sinkhorn potentials
 
 ```
 └── Sinkhorn_Saves
@@ -169,7 +186,7 @@ Shows that we have memory leaks when using Jax. Jax also provides a memory profi
 
 
 
-## Listes des sujets à évoquer Lundi.
+### Listes des sujets à évoquer Lundi.
 
 - [x] **Multioutputs**
   - Le multioutputs, en gros, il fit plusieurs modèles pour chaque Yi (?).
