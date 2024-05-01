@@ -60,6 +60,9 @@ def define_reference_measure(data, ref_measure: str, ref_measure_size):
     elif ref_measure == "UniformSphere":
       center, radius = compute_center_of_blades(data)
       ref_measure_cloud = uniform_sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
+    elif ref_measure == "UniformSphereFar":
+          _, radius = compute_center_of_blades(data)
+          ref_measure_cloud = uniform_sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = np.array([0, 0, 0]))
     elif ref_measure == "disk":
       center, radius = compute_center_of_blades(data)
       ref_measure_cloud = sample_points_on_sphere(num_points = ref_measure_size, radius = radius, center = center)
